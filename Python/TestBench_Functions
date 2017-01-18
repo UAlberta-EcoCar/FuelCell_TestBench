@@ -1,0 +1,7 @@
+from GetData import * #import everything from GetData(which is a class from a file)
+
+def Pin_Value_D_Get(pin_value):
+
+
+def FC_standby():
+    if X:
