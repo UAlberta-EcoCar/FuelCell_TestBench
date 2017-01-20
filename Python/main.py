@@ -12,5 +12,6 @@ DigitalConfigure()
 AnalogConfigure()
 
 while(1):     
-    print PinValueGetDig()
-    print PinValueGetAna()
+    #print PinValueGetDig()
+    #print PinValueGetAna()
+    print PinValueSetDig()
