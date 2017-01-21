@@ -4,18 +4,19 @@ from PyDAQmx import *
 import numpy
 
 def AnalogConfigure():
-      global multipleAI
-      multipleAI = MultiChannelAnalogInput(["Dev1/ai13","Dev1/ai14"])
-      multipleAI.configure()
+      global killMePls
+      killMePls = MultiChannelAnalogInput(["Dev1/ai13","Dev1/ai14"])
+      killMePls.configure()
       
 def PinValueGetAna():
-    return multipleAI.read("test")
+    return killMePls.read("test")
 
 def DigitalConfigure():
     global digitalPortLine
 
     #initialize a 2D array of size 3 rows X 8 columns with an instance of Task() as each element
     #each index corresponds to the port number and line number, ex: [2][1] means port 2 line 1
+    #the list of Task() objects has to be done #these will NOT be referenced in the future
     my00 = Task()
     my01 = Task()
     my02 = Task()
@@ -89,18 +90,13 @@ def DigitalConfigure():
     global read 
     read = int32()
     
-def PinValueGetDig():
-    data1 = numpy.array(numpy.zeros(16, dtype=numpy.uint32))
-    data2 = numpy.array(numpy.zeros(16, dtype=numpy.uint32))
-    #data3 = numpy.array(numpy.zeros(16, dtype=numpy.uint32))
-    digital_input1.ReadDigitalU32(-1, 1, DAQmx_Val_GroupByChannel, data1, 1000, byref(read), None)
-    digital_input2.ReadDigitalU32(-1, 1, DAQmx_Val_GroupByChannel, data2, 1000, byref(read), None)
-    #digital_input3.ReadDigitalU32(-1, 1, DAQmx_Val_GroupByChannel, data3, 1000, byref(read), None)
-    dataAll = numpy.concatenate((data1,data2))
-    digital_input1.StopTask()
-    digital_input2.StopTask()
-    #digital_input3.StopTask()
-    return dataAll
+def PinValueGetDig(pinName):
+    data = numpy.array(numpy.zeros(1, dtype=numpy.uint32))
+
+    digitalPortLine[pinName[0]][pinName[1]].ReadDigitalU32(-1, 1, DAQmx_Val_GroupByChannel, data, 1000, byref(read), None)
+    digitalPortLine[pinName[0]][pinName[1]].StopTask()
+
+    return data
 
 def PinValueSetDig(pinName, onOrOff):
     data = numpy.array([onOrOff], dtype = numpy.uint8) #this is to set the voltage to high or low

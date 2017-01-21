@@ -9,9 +9,9 @@ from TestBench_GPIO_Constants import *
 from TestBench_GPIO_Functions import *
 
 DigitalConfigure()
-#AnalogConfigure()
+AnalogConfigure()
 
-while(1):     
-    #print PinValueGetDig()
-    #print PinValueGetAna()
-    PinValueSetDig(START, 0)
+while(1):
+    print PinValueGetDig(H2OK)
+    print PinValueGetAna()
+    #PinValueSetDig(START, 0)
