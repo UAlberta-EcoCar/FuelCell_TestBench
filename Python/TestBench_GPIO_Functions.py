@@ -9,7 +9,7 @@ def AnalogConfigure():
       analogInputObject.configure()
       
 def PinValueGetAna():
-    return killMePls.read("test")
+    return analogInputObject.read("test")
 
 def DigitalConfigure():
     global digitalPortLine
