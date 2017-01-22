@@ -4,9 +4,9 @@ from PyDAQmx import *
 import numpy
 
 def AnalogConfigure():
-      global killMePls
-      killMePls = MultiChannelAnalogInput(["Dev1/ai13","Dev1/ai14"])
-      killMePls.configure()
+      global analogInputObject
+      analogInputObject = MultiChannelAnalogInput(["Dev1/ai13","Dev1/ai14"])
+      analogInputObject.configure()
       
 def PinValueGetAna():
     return killMePls.read("test")
@@ -67,32 +67,32 @@ def DigitalConfigure():
     digitalPortLine[2][2].CreateDOChan("Dev1/port2/line2", "", DAQmx_Val_ChanForAllLines)
 
     #DAQmx start code
-    digitalPortLine[0][0].StartTask()
-    digitalPortLine[0][1].StartTask()
-    digitalPortLine[0][2].StartTask()
-    digitalPortLine[0][3].StartTask()
-    digitalPortLine[0][4].StartTask()
-    digitalPortLine[0][5].StartTask()
-    digitalPortLine[0][6].StartTask()
-    digitalPortLine[0][7].StartTask()
-    digitalPortLine[1][0].StartTask()
-    digitalPortLine[1][1].StartTask()
-    digitalPortLine[1][2].StartTask()
-    digitalPortLine[1][3].StartTask()
-    digitalPortLine[1][4].StartTask()
-    digitalPortLine[1][5].StartTask()
-    digitalPortLine[1][6].StartTask()
-    digitalPortLine[1][7].StartTask()
-    digitalPortLine[2][0].StartTask()
-    digitalPortLine[2][1].StartTask()
-    digitalPortLine[2][2].StartTask()
+#    digitalPortLine[0][0].StartTask()
+#    digitalPortLine[0][1].StartTask()
+#    digitalPortLine[0][2].StartTask()
+#    digitalPortLine[0][3].StartTask()
+#    digitalPortLine[0][4].StartTask()
+#    digitalPortLine[0][5].StartTask()
+#    digitalPortLine[0][6].StartTask()
+#    digitalPortLine[0][7].StartTask()
+#    digitalPortLine[1][0].StartTask()
+#    digitalPortLine[1][1].StartTask()
+#    digitalPortLine[1][2].StartTask()
+#    digitalPortLine[1][3].StartTask()
+#    digitalPortLine[1][4].StartTask()
+#    digitalPortLine[1][5].StartTask()
+#    digitalPortLine[1][6].StartTask()
+#    digitalPortLine[1][7].StartTask()
+#    digitalPortLine[2][0].StartTask()
+#    digitalPortLine[2][1].StartTask()
+#    digitalPortLine[2][2].StartTask()
 
     global read 
     read = int32()
     
 def PinValueGetDig(pinName):
     data = numpy.array(numpy.zeros(1, dtype=numpy.uint32))
-
+    digitalPortLine[pinName[0]][pinName[1]].StartTask()
     digitalPortLine[pinName[0]][pinName[1]].ReadDigitalU32(-1, 1, DAQmx_Val_GroupByChannel, data, 1000, byref(read), None)
     digitalPortLine[pinName[0]][pinName[1]].StopTask()
 
@@ -100,5 +100,6 @@ def PinValueGetDig(pinName):
 
 def PinValueSetDig(pinName, onOrOff):
     data = numpy.array([onOrOff], dtype = numpy.uint8) #this is to set the voltage to high or low
+    digitalPortLine[pinName[0]][pinName[1]].StartTask()
     digitalPortLine[pinName[0]][pinName[1]].WriteDigitalLines(1,1,10.0,DAQmx_Val_GroupByChannel,data,None,None)
     digitalPortLine[pinName[0]][pinName[1]].StopTask()
