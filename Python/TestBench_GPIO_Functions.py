@@ -5,11 +5,11 @@ import numpy
 
 def AnalogConfigure():
       global analogInputObject
-      analogInputObject = MultiChannelAnalogInput(["Dev1/ai13","Dev1/ai14"])
-      analogInputObject.configure()
       
-def PinValueGetAna():
-    return analogInputObject.read("test")
+def PinValueGetAna(pinName):
+    analogInputObject = MultiChannelAnalogInput(["Dev1/ai" + pinName])
+    analogInputObject.configure()
+    return analogInputObject.read()
 
 def DigitalConfigure():
     global digitalPortLine
