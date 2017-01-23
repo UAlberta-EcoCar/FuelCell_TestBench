@@ -8,10 +8,12 @@ Created on Tue Jan 17 20:52:00 2017
 from TestBench_GPIO_Constants import *
 from TestBench_GPIO_Functions import *
 
-DigitalConfigure()
-#AnalogConfigure()
+
+
+#digital_configure()
+#analog_configure()
 
 while(1):
-    print PinValueGetDig(H2OK)
-    print PinValueGetAna(TEST)
+    print pin_value_get_dig(H2OK)
+    print pin_value_get_ana(TEST)
     #PinValueSetDig(START, 0)
