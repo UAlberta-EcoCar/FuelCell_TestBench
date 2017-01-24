@@ -10,10 +10,10 @@ from TestBench_GPIO_Functions import *
 
 
 
-#digital_configure()
+digital_configure()
 #analog_configure()
 
 while(1):
     print pin_value_get_dig(H2OK)
-    print pin_value_get_ana(TEST)
+    #print pin_value_get_ana(TEST)
     #PinValueSetDig(START, 0)
