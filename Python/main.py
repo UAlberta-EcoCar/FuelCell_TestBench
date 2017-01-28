@@ -14,6 +14,6 @@ digital_configure()
 #analog_configure()
 
 while(1):
-    print pin_value_get_dig(H2OK)
+    #print pin_value_get_dig(START)
     #print pin_value_get_ana(TEST)
-    #PinValueSetDig(START, 0)
+    pin_value_set_dig(TEST_OUTPUT, 1)

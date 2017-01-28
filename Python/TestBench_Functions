@@ -3,9 +3,16 @@ from TestBench_GPIO_Constants import *
 from TestBench_GPIO_Functions import *
 import time
 
+#start_delay not needed, it is a value in not working fan function
 global repress_delay
 global delay_timer1
 global delay_timer2
+global purge_timer
+global purge_integration_timer
+global purge_state
+global time_since_last_purge
+global charge_thres
+global delta_purge_time
 
 # valve close = 0
 # relay close = 1
@@ -36,10 +43,10 @@ def FC_startup_h2():
     #purge valve closed
     pin_value_set_dig(PURGE_VALVE, 0)
     #relays open
-    pin_value_set_dig(STARTUP_RELAY, 1)
-    pin_value_set_dig(MOTOR_RELAY, 1)
-    pin_value_set_dig(RESISTOR_RELAY, 1)
-    pin_value_set_dig(CAP_RELAY, 1)
+    pin_value_set_dig(STARTUP_RELAY, 0)
+    pin_value_set_dig(MOTOR_RELAY, 0)
+    pin_value_set_dig(RESISTOR_RELAY, 0)
+    pin_value_set_dig(CAP_RELAY, 0)
 
     #input h2 until voltage reaches 30
     if (get_FCVOLT() < 30000):
@@ -51,20 +58,21 @@ def FC_startup_h2():
     return FC_state
 
 def FC_startup_purge():
+    purge_timer = 0
     #h2 valve still open
     pin_value_set_dig(H2_VALVE, 1)
     #close startup relay
-    if (1): #help
-        pin_value_set_dig(STARTUP_RELAY, 0)
+    if (pin_value_get_dig_output(RESISTOR_RELAY) == 0 or pin_value_get_dig_output(CAP_RELAY) == 0):
+        pin_value_set_dig(STARTUP_RELAY, 1)
     #motor relay still open
-    pin_value_set_dig(MOTOR_RELAY, 1)
+    pin_value_set_dig(MOTOR_RELAY, 0)
     #RES relay open
-    pin_value_set_dig(RESISTOR_RELAY, 1)
+    pin_value_set_dig(RESISTOR_RELAY, 0)
     #CAP relay still open
-    pin_value_set_dig(CAP_RELAY, 1)
+    pin_value_set_dig(CAP_RELAY, 0)
 
     #open purge valve and start timer
-    if (1):#help
+    if (pin_value_get_dig_output(PURGE_VALVE) == 0):
         purge_timer = time.clock()
 
     pin_value_set_dig(PURGE_VALVE, 1)
@@ -73,15 +81,15 @@ def FC_startup_purge():
     if (time.clock() - purge_timer < 3000):
         FC_state = FC_STATE_STARTUP_PURGE
     else:
-        #close purge valuve
+        #close purge valve
         pin_value_set_dig(PURGE_VALVE, 0)
         #supply valve still open
-        pin_value_set_dig(H2_VALVE, 0)
+        pin_value_set_dig(H2_VALVE, 1)
         #open all relays
-        pin_value_set_dig(STARTUP_RELAY, 1)
-        pin_value_set_dig(RESISTOR_RELAY, 1)
-        pin_value_set_dig(MOTOR_RELAY, 1)
-        pin_value_set_dig(CAP_RELAY, 1)
+        pin_value_set_dig(STARTUP_RELAY, 0)
+        pin_value_set_dig(RESISTOR_RELAY, 0)
+        pin_value_set_dig(MOTOR_RELAY, 0)
+        pin_value_set_dig(CAP_RELAY, 0)
 
         delay_timer1 = time.clock()
 
@@ -97,19 +105,35 @@ def FC_repressurize():
     return FC_state
 
 #some weird code in C file here, help
-#continue from here
 
 def FC_startup_charge():
     #where should i put this?
     charge_thres = 35000
-    delay_timer2 = 0;
-
+    delay_timer2 = 0
+    purge_state = FIRST_PURGE_CYCLE
+    time_since_last_purge = 0
+    purge_integration_timer = 0
+    delta_purge_time = 0
+    #will keep charging until state exits
     FC_state = FC_STATE_STARTUP_CHARGE
     if (time.clock() - delay_timer1 < 1000):
         return FC_state
+
+    if (purge_state == FIRST_PURGE_CYCLE):
+        purge_integration_timer = time.clock()
+        purge_state = PURGE_VALVE_CLOSED
+
+    delta_purge_time = time.clock() - purge_integration_timer
+    if (delta_purge_time > PURGE_INTEGRATION_INTERVAL):
+        #continue from here
+        #
+        #
+        #
+        #
+
     if (get_CAPVOLT() < charge_thres):
         #close resistor relay
-        pin_value_set_dig(RESISTOR_RELAY, 0)
+        pin_value_set_dig(RESISTOR_RELAY, 1)
         #other relays still open
         pin_value_set_dig(STARTUP_RELAY, 0)
         pin_value_set_dig(MOTOR_RELAY, 0)

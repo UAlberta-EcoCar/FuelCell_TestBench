@@ -13,6 +13,7 @@ def pin_value_get_ana(pin_name):
 
 def digital_configure():
     global digital_port_line
+    global digital_port_line_output_readings
 
     #initialize a 2D array of size 3 rows X 8 columns with an instance of Task() as each element
     #each index corresponds to the port number and line number, ex: [2][1] means port 2 line 1
@@ -42,6 +43,8 @@ def digital_configure():
     my26 = Task()
     my27 = Task()
     digital_port_line = [[my00,my01,my02,my03,my04,my05,my06,my07],[my10,my11,my12,my13,my14,my15,my16,my17],[my20,my21,my22,my23,my24,my25,my26,my27]]
+
+    digital_port_line_output_readings = numpy.zeros(shape=(8, 3))
 
     #creating input channels
     digital_port_line[0][0].CreateDIChan("Dev1/port0/line0", "", DAQmx_Val_ChanForAllLines)
@@ -103,3 +106,8 @@ def pin_value_set_dig(pin_name, on_or_off):
     digital_port_line[pin_name[0]][pin_name[1]].StartTask()
     digital_port_line[pin_name[0]][pin_name[1]].WriteDigitalLines(1,1,10.0,DAQmx_Val_GroupByChannel,data,None,None)
     digital_port_line[pin_name[0]][pin_name[1]].StopTask()
+    digital_port_line_output_readings[pin_name[0]][pin_name[1]] = on_or_off
+    return digital_port_line_output_readings[pin_name[0]][pin_name[1]]
+
+def pin_value_get_dig_output(pin_name):
+    return digital_port_line_output_readings[pin_name[0]][pin_name[1]]
