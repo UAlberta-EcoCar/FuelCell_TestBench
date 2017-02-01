@@ -4,7 +4,7 @@ from PyDAQmx import *
 import numpy
 
 def analog_configure():
-      global analog_input_object
+    global analog_input_object
       
 def pin_value_get_ana(pin_name):
     analog_input_object = MultiChannelAnalogInput(["Dev1/ai" + pin_name])
