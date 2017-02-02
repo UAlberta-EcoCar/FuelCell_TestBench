@@ -7,16 +7,19 @@ from TestBench_Constants import *
 #start_delay not needed, it is a value in not working fan function
 charge_thres = 35000
 purge_counter = 0
+purge_timer = 0
+repress_delay = 0
+purge_state = "FIRST_PURGE_CYCLE"
 
 # valve close = 0
 # relay close = 1
 # ignore fan stuff for now, will work on it later, pwm comes in here
 # work on math functions(the weird non state functions) after the state functions(includes purge stuff)
-# FC_STATE_STANDBY, etc is from another file
 
 def FC_standby():
-    if (pin_value_get_dig(START)):
-        #ncahnge fan state to startup fans
+    if pin_value_get_dig(START):
+        #change fan state to startup fans
+        FC_state = "FC_STATE_STARTUP_FANS"
     else:
         #make sure fuel cell stays off
         #supply valve closed
@@ -28,7 +31,7 @@ def FC_standby():
         pin_value_set_dig(RESISTOR_RELAY, 0)
         pin_value_set_dig(CAP_RELAY, 0)
 
-        FC_state = FC_STATE_STANDBY
+        FC_state = "FC_STATE_STANDBY"
     return FC_state
 
 def FC_startup_h2():
@@ -45,13 +48,16 @@ def FC_startup_h2():
     #input h2 until voltage reaches 30
     if (get_FCVOLT() < 30000):
         #loop back into same state
-        FC_state = FC_STATE_STARTUP_H2
+        FC_state = "FC_STATE_STARTUP_H2"
     else:
         #voltage is 30 then go to start up purge
-        FC_state = FC_STATE_STARTUP_PURGE
+        FC_state = "FC_STATE_STARTUP_PURGE"
     return FC_state
 
 def FC_startup_purge():
+    global delay_timer1
+    global repress_delay
+    global purge_timer
     #h2 valve still open
     pin_value_set_dig(H2_VALVE, 1)
     #close startup relay
@@ -71,8 +77,8 @@ def FC_startup_purge():
     pin_value_set_dig(PURGE_VALVE, 1)
 
     #wait 3 seconds before changing state
-    if (time.clock() - purge_timer < 3000):
-        FC_state = FC_STATE_STARTUP_PURGE
+    if (time.clock() - purge_timer < 3):
+        FC_state = "FC_STATE_STARTUP_PURGE"
     else:
         #close purge valve
         pin_value_set_dig(PURGE_VALVE, 0)
@@ -88,16 +94,16 @@ def FC_startup_purge():
 
         repress_delay = time.clock()
         #change state to repressurized delay
-        FC_state = FC_STATE_REPRESSURIZE
+        FC_state = "FC_STATE_REPRESSURIZE"
     return FC_state
 
 def FC_repressurize():
-    FC_state = FC_STATE_REPRESSURIZE
-    if (time.clock() - repress_delay > 1000):
-        FC_state = FC_STATE_STARTUP_CHARGE
+    global repress_delay
+    FC_state = "FC_STATE_REPRESSURIZE"
+    if (time.clock() - repress_delay > 1):
+        FC_state = "FC_STATE_STARTUP_CHARGE"
     return FC_state
 
-#some weird code in C file here, help
 def get_time_between_last_purges():
     return time_between_last_purges
 
@@ -113,7 +119,8 @@ def get_J_since_last_purge():
 def get_total_E():
     return estimated_total_E/1000
 
-purge_state = FIRST_PURGE_CYCLE
+#continue from here
+#are the variables, delay_timer1, etc, defined elsewhere?
 
 def FC_startup_charge():
     global repress_delay
@@ -134,13 +141,13 @@ def FC_startup_charge():
     global mAms_since_last_purge
     global fan_update_timer
     #will keep charging until state exits
-    FC_state = FC_STATE_STARTUP_CHARGE
+    FC_state = "FC_STATE_STARTUP_CHARGE"
     if (time.clock() - delay_timer1 < 1000):
         return FC_state
 
-    if (purge_state == FIRST_PURGE_CYCLE):
+    if (purge_state == "FIRST_PURGE_CYCLE"):
         purge_integration_timer = time.clock()
-        purge_state = PURGE_VALVE_CLOSED
+        purge_state = "PURGE_VALVE_CLOSED"
 
     delta_purge_time = time.clock() - purge_integration_timer
     if (delta_purge_time > PURGE_INTEGRATION_INTERVAL):
@@ -168,14 +175,14 @@ def FC_startup_charge():
         #start purge timer to time purge
         purge_timer = time.clock()
         #change purge state to open
-        purge_state = PURGE_VALVE_OPEN
+        purge_state = "PURGE_VALVE_OPEN"
 
-    if (purge_state == PURGE_VALVE_OPEN): #if purge valve is open
+    if (purge_state == "PURGE_VALVE_OPEN"): #if purge valve is open
         if (time.clock() - purge_timer > PURGE_TIME): #if it has completed purge
             #close purge valve
             pin_value_set_dig(PURGE_VALVE, 0)
             #change purge state to closed
-            purge_state = PURGE_VALVE_CLOSED
+            purge_state = "PURGE_VALVE_CLOSED"
 
     #fan stuff
 
@@ -201,15 +208,15 @@ def FC_startup_charge():
     else:#caps are charged
         charge_thres = 33000
         if (time.clock() - delay_timer2 < 2000):
-            return FC_STATE_STARTUP_CHARGE
+            return "FC_STATE_STARTUP_CHARGE"
 
         if (time.clock() - delay_timer2 < 4000):
-            return FC_STATE_STARTUP_CHARGE
+            return "FC_STATE_STARTUP_CHARGE"
 
         #close motor relay
         pin_value_set_dig(MOTOR_RELAY, 1)
         #go to main run state
-        FC_state = FC_STATE_RUN
+        FC_state = "FC_STATE_RUN"
 
     return FC_state
 
@@ -243,6 +250,7 @@ def FC_run():
 
     if (time.clock() - fan_update_timer > FANUPDATE_INTERVAL):
         #fan update stuff
+        n=1 #dummy variable
 
     delta_purge_timer = time.clock() - purge_integration_timer
     if (delta_purge_timer > PURGE_INTEGRATION_INTERVAL):
@@ -269,14 +277,14 @@ def FC_run():
         #start purge timer to time purge
         purge_timer = time.clock()
         #change purge state to open
-        purge_state = PURGE_VALVE_OPEN
+        purge_state = "PURGE_VALVE_OPEN"
 
-    if (purge_state == PURGE_VALVE_OPEN):
+    if (purge_state == "PURGE_VALVE_OPEN"):
         if (time.clock() - purge_timer > PURGE_TIME):
             #close purge valve
             pin_value_set_dig(PURGE_VALVE, 0)
             #change purge state eto close
-            purge_state = PURGE_VALVE_CLOSED
+            purge_state = "PURGE_VALVE_CLOSED"
 
     delta_t = time.clock() - total_charge_energy_integration_timer
     if (delta_t > TOTAL_CHARGE_ENERGY_INTEGRATION_INTERVAL):
@@ -284,7 +292,7 @@ def FC_run():
         estimated_total_charge_extracted = estimated_total_charge_extracted + get_FCCURR() * delta_t / 1000
         total_charge_energy_integration_timer = time.clock()
 
-    FC_state = FC_STATE_RUN
+    FC_state = "FC_STATE_RUN"
     return FC_state
 
 def FC_shutdown():
@@ -298,9 +306,9 @@ def FC_shutdown():
     pin_value_set_dig(CAP_RELAY, 0)
 
     if (0):
-        FC_state = FC_STATE_STANDBY
+        FC_state = "FC_STATE_STANDBY"
     else:
-        FC_state = FC_STATE_SHUTDOWN
+        FC_state = "FC_STATE_SHUTDOWN"
 
     return FC_state
 
@@ -314,5 +322,5 @@ def FC_alarm():
     pin_value_set_dig(RESISTOR_RELAY, 0)
     pin_value_set_dig(CAP_RELAY, 0)
 
-    FC_state = FC_STATE_ALARM
+    FC_state = "FC_STATE_ALARM"
     return FC_state

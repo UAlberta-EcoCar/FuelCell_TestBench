@@ -15,3 +15,9 @@ global uJ_since_last_purge
 global estimated_total_E
 global mAms_since_last_purge
 global fan_update_timer
+
+FANUPDATE_INTERVAL = 0
+PURGE_INTEGRATION_INTERVAL = 0
+PURGE_THRESHOLD = 0
+PURGE_TIME = 0
+TOTAL_CHARGE_ENERGY_INTEGRATION_INTERVAL = 0
