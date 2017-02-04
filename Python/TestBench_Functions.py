@@ -119,9 +119,6 @@ def get_J_since_last_purge():
 def get_total_E():
     return estimated_total_E/1000
 
-#continue from here
-#are the variables, delay_timer1, etc, defined elsewhere?
-
 def FC_startup_charge():
     global repress_delay
     global delay_timer1
@@ -141,8 +138,9 @@ def FC_startup_charge():
     global mAms_since_last_purge
     global fan_update_timer
     #will keep charging until state exits
+    delay_timer1 = 0 #for testing purposes
     FC_state = "FC_STATE_STARTUP_CHARGE"
-    if (time.clock() - delay_timer1 < 1000):
+    if (time.clock() - delay_timer1 < 1):
         return FC_state
 
     if (purge_state == "FIRST_PURGE_CYCLE"):
@@ -207,10 +205,10 @@ def FC_startup_charge():
         delay_timer2 = time.clock()
     else:#caps are charged
         charge_thres = 33000
-        if (time.clock() - delay_timer2 < 2000):
-            return "FC_STATE_STARTUP_CHARGE"
+        #if (time.clock() - delay_timer2 < 2):
+        #    return "FC_STATE_STARTUP_CHARGE"
 
-        if (time.clock() - delay_timer2 < 4000):
+        if (time.clock() - delay_timer2 < 4):
             return "FC_STATE_STARTUP_CHARGE"
 
         #close motor relay

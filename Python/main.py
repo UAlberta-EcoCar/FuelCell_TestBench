@@ -20,4 +20,4 @@ analog_configure()
 #pin_value_set_dig(H2_VALVE, 1)
 
 while (1):
-    print FC_repressurize()
+    print FC_startup_charge()
