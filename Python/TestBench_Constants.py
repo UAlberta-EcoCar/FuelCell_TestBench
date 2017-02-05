@@ -1,0 +1,23 @@
+global repress_delay
+global delay_timer1
+global delay_timer2
+global purge_timer
+global purge_integration_timer
+global purge_state
+global time_since_last_purge
+global charge_thres
+global delta_purge_time
+global total_charge_energy_integration_timer
+global time_between_last_purges
+global purge_counter
+global estimated_total_charge_extracted
+global uJ_since_last_purge
+global estimated_total_E
+global mAms_since_last_purge
+global fan_update_timer
+
+FANUPDATE_INTERVAL = 0
+PURGE_INTEGRATION_INTERVAL = 0
+PURGE_THRESHOLD = 0
+PURGE_TIME = 0
+TOTAL_CHARGE_ENERGY_INTEGRATION_INTERVAL = 0
