@@ -138,7 +138,6 @@ def FC_startup_charge():
     global mAms_since_last_purge
     global fan_update_timer
     #will keep charging until state exits
-    delay_timer1 = 0 #for testing purposes
     FC_state = "FC_STATE_STARTUP_CHARGE"
     if (time.clock() - delay_timer1 < 1):
         return FC_state
@@ -205,8 +204,6 @@ def FC_startup_charge():
         delay_timer2 = time.clock()
     else:#caps are charged
         charge_thres = 33000
-        #if (time.clock() - delay_timer2 < 2):
-        #    return "FC_STATE_STARTUP_CHARGE"
 
         if (time.clock() - delay_timer2 < 4):
             return "FC_STATE_STARTUP_CHARGE"
@@ -248,11 +245,12 @@ def FC_run():
 
     if (time.clock() - fan_update_timer > FANUPDATE_INTERVAL):
         #fan update stuff
-        n=1 #dummy variable
+        #more fan stuff
+        fan_update_timer = time.clock()
 
     delta_purge_timer = time.clock() - purge_integration_timer
     if (delta_purge_timer > PURGE_INTEGRATION_INTERVAL):
-        mAms_since_last_purge = mAms_since_last_purge + delta_purge_time * (get_FCCURR())
+        mAms_since_last_purge = mAms_since_last_purge + delta_purge_time * get_FCCURR()
         uJ_since_last_purge = uJ_since_last_purge + delta_purge_time * get_FCCURR() * get_FCVOLT() / 1000
         purge_integration_timer = time.clock()
         time_since_last_purge = time_since_last_purge + delta_purge_time
@@ -298,10 +296,12 @@ def FC_shutdown():
     pin_value_set_dig(H2_VALVE, 0)
     pin_value_set_dig(PURGE_VALVE, 0)
     #close relays
-    pin_value_set_dig(MOTOR_RELAY, 0)
-    pin_value_set_dig(STARTUP_RELAY, 0)
-    pin_value_set_dig(RESISTOR_RELAY, 0)
-    pin_value_set_dig(CAP_RELAY, 0)
+    pin_value_set_dig(MOTOR_RELAY, 1)
+    pin_value_set_dig(STARTUP_RELAY, 1)
+    pin_value_set_dig(RESISTOR_RELAY, 1)
+    pin_value_set_dig(CAP_RELAY, 1)
+
+    #fan stuff
 
     if (0):
         FC_state = "FC_STATE_STANDBY"
@@ -315,10 +315,12 @@ def FC_alarm():
     pin_value_set_dig(H2_VALVE, 0)
     pin_value_set_dig(PURGE_VALVE, 0)
     #close relays
-    pin_value_set_dig(MOTOR_RELAY, 0)
-    pin_value_set_dig(STARTUP_RELAY, 0)
-    pin_value_set_dig(RESISTOR_RELAY, 0)
-    pin_value_set_dig(CAP_RELAY, 0)
+    pin_value_set_dig(MOTOR_RELAY, 1)
+    pin_value_set_dig(STARTUP_RELAY, 1)
+    pin_value_set_dig(RESISTOR_RELAY, 1)
+    pin_value_set_dig(CAP_RELAY, 1)
+
+    #fan stuff
 
     FC_state = "FC_STATE_ALARM"
     return FC_state
