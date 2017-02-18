@@ -70,12 +70,6 @@ def digital_configure():
     digital_port_line[2][1].CreateDOChan("Dev1/port2/line1", "", DAQmx_Val_ChanForAllLines)
     digital_port_line[2][2].CreateDOChan("Dev1/port2/line2", "", DAQmx_Val_ChanForAllLines)
 
-    #test output channels
-    digital_port_line[0][0].CreateDOChan("Dev1/port0/line0", "", DAQmx_Val_ChanForAllLines)
-    digital_port_line[0][1].CreateDOChan("Dev1/port0/line1", "", DAQmx_Val_ChanForAllLines)
-    digital_port_line[0][2].CreateDOChan("Dev1/port0/line2", "", DAQmx_Val_ChanForAllLines)
-    digital_port_line[2][3].CreateDOChan("Dev1/port2/line3", "", DAQmx_Val_ChanForAllLines)
-
     #DAQmx start code
 #    digital_port_line[0][0].StartTask()
 #    digital_port_line[0][1].StartTask()
@@ -118,3 +112,23 @@ def pin_value_set_dig(pin_name, on_or_off):
 
 def pin_value_get_dig_output(pin_name):
     return digital_port_line_output_readings[pin_name[0]][pin_name[1]]
+
+#0.001 is off and 0.999 is max
+def FANStart():
+    global fanTaskHandle
+    fanTaskHandle = TaskHandle(0)
+    DAQmxCreateTask("", byref(fanTaskHandle))
+    DAQmxCreateCOPulseChanFreq(fanTaskHandle, "dev1/ctr0", "", DAQmx_Val_Hz, DAQmx_Val_Low,
+                               0.0, 1 / float(0.00004), 0.001)
+    DAQmxCfgImplicitTiming(fanTaskHandle, DAQmx_Val_ContSamps, 1000)
+    DAQmxStartTask(fanTaskHandle)
+
+def FANUpdate(duty_cycle):
+    global fanTaskHandle
+    DAQmxStopTask(fanTaskHandle)
+    DAQmxClearTask(fanTaskHandle)
+    DAQmxCreateTask("", byref(fanTaskHandle))
+    DAQmxCreateCOPulseChanFreq(fanTaskHandle, "dev1/ctr0", "", DAQmx_Val_Hz, DAQmx_Val_Low,
+                               0.0, 1 / float(0.00004), duty_cycle)
+    DAQmxCfgImplicitTiming(fanTaskHandle, DAQmx_Val_ContSamps, 1000)
+    DAQmxStartTask(fanTaskHandle)

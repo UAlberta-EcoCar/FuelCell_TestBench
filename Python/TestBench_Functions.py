@@ -31,6 +31,7 @@ def FC_standby():
         pin_value_set_dig(RESISTOR_RELAY, 0)
         pin_value_set_dig(CAP_RELAY, 0)
 
+        FANUpdate(0.001)
         FC_state = "FC_STATE_STANDBY"
     return FC_state
 
@@ -181,7 +182,9 @@ def FC_startup_charge():
             #change purge state to closed
             purge_state = "PURGE_VALVE_CLOSED"
 
-    #fan stuff
+    if (time.clock() - fan_update_timer > FANUPDATE_INTERVAL):
+        FANUpdate(PID(get_FCTEMP(), calc_opt_temp()))
+        fan_update_timer = time.clock()
 
     delta_t = time.clock() - total_charge_energy_integration_timer
     if (delta_t > TOTAL_CHARGE_ENERGY_INTEGRATION_INTERVAL):
@@ -244,8 +247,7 @@ def FC_run():
     global fan_update_timer
 
     if (time.clock() - fan_update_timer > FANUPDATE_INTERVAL):
-        #fan update stuff
-        #more fan stuff
+        FANUpdate(PID(get_FCTEMP(), calc_opt_temp()))
         fan_update_timer = time.clock()
 
     delta_purge_timer = time.clock() - purge_integration_timer
@@ -301,7 +303,7 @@ def FC_shutdown():
     pin_value_set_dig(RESISTOR_RELAY, 1)
     pin_value_set_dig(CAP_RELAY, 1)
 
-    #fan stuff
+    FANUpdate(0.999)
 
     if (0):
         FC_state = "FC_STATE_STANDBY"
@@ -320,7 +322,6 @@ def FC_alarm():
     pin_value_set_dig(RESISTOR_RELAY, 1)
     pin_value_set_dig(CAP_RELAY, 1)
 
-    #fan stuff
-
+    FANUpdate(0.999)
     FC_state = "FC_STATE_ALARM"
     return FC_state
