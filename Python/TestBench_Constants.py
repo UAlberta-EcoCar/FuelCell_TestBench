@@ -40,3 +40,5 @@ estimated_total_charge_extracted = 0
 fan_update_timer = 0
 purge_integration_timer = 0
 delta_purge_time = 0
+
+prev_duty_cycle = 0.001

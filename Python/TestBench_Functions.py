@@ -305,10 +305,7 @@ def FC_shutdown():
 
     FANUpdate(0.999)
 
-    if (0):
-        FC_state = "FC_STATE_STANDBY"
-    else:
-        FC_state = "FC_STATE_SHUTDOWN"
+    FC_state = "FC_STATE_SHUTDOWN"
 
     return FC_state
 

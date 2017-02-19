@@ -10,25 +10,22 @@ from TestBench_GPIO_Functions import *
 from TestBench_Functions import *
 import DAQmxFunctions
 
-
-
 digital_configure()
 analog_configure()
 FANStart()
 
-
+initial_time = time.clock()
 #print pin_value_get_dig(START)
 #print pin_value_get_ana(TEST)
 #pin_value_set_dig(H2_VALVE, 1)
 
-#while (1):
-#taskHandle2 = TaskHandle(1)
-#DAQmxStopTask(taskHandle1)
-#DAQmxClearTask(taskHandle1)
-FANUpdate(0.9)
-a = raw_input("Generating pulse train. Press Enter to interrupt\n")
-FANUpdate(0.999)
-a = raw_input("Generating pulse train. Press Enter to interrupt\n")
-FANUpdate(0.001)
-a = raw_input("Generating pulse train. Press Enter to interrupt\n")
-
+while 1:
+    #time1 = time.clock()
+    #FANUpdate(0.999)
+    #time2 = time.clock()
+    #print time2 - time1
+    if time.clock() - initial_time > 5:
+        FANUpdate(0.5)
+        initial_time = time.clock()
+    elif time.clock() - initial_time > 3:
+        FANUpdate(0.999)

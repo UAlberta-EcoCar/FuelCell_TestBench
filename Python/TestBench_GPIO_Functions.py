@@ -1,5 +1,6 @@
 from MultiChannelAnalogInput import *
 from TestBench_GPIO_Constants import *
+from TestBench_Constants import *
 from PyDAQmx import *
 import numpy
 
@@ -125,10 +126,13 @@ def FANStart():
 
 def FANUpdate(duty_cycle):
     global fanTaskHandle
-    DAQmxStopTask(fanTaskHandle)
-    DAQmxClearTask(fanTaskHandle)
-    DAQmxCreateTask("", byref(fanTaskHandle))
-    DAQmxCreateCOPulseChanFreq(fanTaskHandle, "dev1/ctr0", "", DAQmx_Val_Hz, DAQmx_Val_Low,
+    global prev_duty_cycle
+    if (prev_duty_cycle != duty_cycle):
+        prev_duty_cycle = duty_cycle
+        DAQmxStopTask(fanTaskHandle)
+        DAQmxClearTask(fanTaskHandle)
+        DAQmxCreateTask("", byref(fanTaskHandle))
+        DAQmxCreateCOPulseChanFreq(fanTaskHandle, "dev1/ctr0", "", DAQmx_Val_Hz, DAQmx_Val_Low,
                                0.0, 1 / float(0.00004), duty_cycle)
-    DAQmxCfgImplicitTiming(fanTaskHandle, DAQmx_Val_ContSamps, 1000)
-    DAQmxStartTask(fanTaskHandle)
+        DAQmxCfgImplicitTiming(fanTaskHandle, DAQmx_Val_ContSamps, 1000)
+        DAQmxStartTask(fanTaskHandle)
