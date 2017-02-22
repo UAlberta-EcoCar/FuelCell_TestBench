@@ -6,10 +6,15 @@ Created on Tue Dec 27 03:40:29 2016
 """
 from Tkinter import *
 from ttk import Button, Style
+from TestBench_GPIO_Constants import *
+from TestBench_GPIO_Functions import *
+import time
+from TestBench_Constants import *
 
 class TestbenchFCC_GUI(Frame):
     def __init__(self,parent):
         self.parent = parent
+        self.FC_state = "FC_STATE_STANDBY"
 
         # Analog Inputs
         self.FCTemp1 = DoubleVar()
@@ -78,25 +83,29 @@ class TestbenchFCC_GUI(Frame):
         analog_in_row1 = 0
         analog_in_row2 = 1
 
-        Label(self.parent, text="FC Temp 1: ").grid(row=analog_in_row1, column=0)
+        Label(self.parent, text="FC Temp 1: ").grid(\
+            row=analog_in_row1, column=0)
         self.fctemp1_display = StringVar()
         self.fctemp1_display.set(str(self.FCTemp1.get()))
         Entry(self.parent,textvariable=self.fctemp1_display, \
             justify='center').grid(row=analog_in_row1, column=1)
 
-        Label(self.parent, text="FC Temp 2: ").grid(row=analog_in_row2, column=0)
+        Label(self.parent, text="FC Temp 2: ").grid(\
+            row=analog_in_row2, column=0)
         self.fctemp2_display = StringVar()
         self.fctemp2_display.set(str(self.FCTemp2.get()))
         Entry(self.parent, textvariable=self.fctemp2_display, \
             justify='center').grid(row=analog_in_row2, column=1)
 
-        Label(self.parent, text="FC Voltage: ").grid(row=analog_in_row1, column=2)
+        Label(self.parent, text="FC Voltage: ").grid(\
+            row=analog_in_row1, column=2)
         self.fcvolt_display = StringVar()
         self.fcvolt_display.set(str(self.FCVolt.get()))
         Entry(self.parent, textvariable=self.fcvolt_display, \
         justify='center').grid(row=analog_in_row1, column=3)
 
-        Label(self.parent, text="FC Current: ").grid(row=analog_in_row2, column=2)
+        Label(self.parent, text="FC Current: ").grid(\
+            row=analog_in_row2, column=2)
         self.fccurr_display = StringVar()
         self.fccurr_display.set(str(self.FCCurr.get()))
         Entry(self.parent,textvariable=self.fccurr_display, \
@@ -109,13 +118,15 @@ class TestbenchFCC_GUI(Frame):
         Entry(self.parent, textvariable=self.fcpres_display, \
             justify='center').grid(row=analog_in_row1, column=5)
 
-        Label(self.parent, text="Cap Voltage: ").grid(row=analog_in_row2, column=4)
+        Label(self.parent, text="Cap Voltage: ").grid(\
+            row=analog_in_row2, column=4)
         self.capvolt_display = StringVar()
         self.capvolt_display.set(str(self.CapVolt.get()))
         Entry(self.parent, textvariable=self.capvolt_display, \
             justify='center').grid(row=analog_in_row2, column=5)
 
-        Label(self.parent, text="Mass Flow: ").grid(row=analog_in_row1, column=6)
+        Label(self.parent, text="Mass Flow: ").grid(\
+            row=analog_in_row1, column=6)
         self.massflow_display = StringVar()
         self.massflow_display.set(str(self.MassFlow.get()))
         Entry(self.parent,textvariable=self.massflow_display, \
@@ -269,14 +280,39 @@ class TestbenchFCC_GUI(Frame):
             range(self.FCCellVoltCols)] for row in \
                 range(self.FCCellVoltRows)]
 
+    def main(self):
+        while True:
+            # State machine
+            if (self.FC_state == "FC_STATE_STANDBY"):
+                self.FC_state = FC_standby()
+            elif (self.FC_state == "FC_STATE_SHUTDOWN"):
+                self.FC_state = FC_shutdown()
+            elif (self.FC_state == "FC_STATE_STARTUP_FANS"):
+                # Ignore implementation for now, since fan stuff not working atm
+                pass
+            elif (self.FC_state == "FC_STATE_STARTUP_H2"):
+                self.FC_state = FC_startup_h2()
+            elif (self.FC_state == "FC_STATE_STARTUP_PURGE"):
+                self.FC_state = FC_startup_purge()
+            elif (self.FC_state == "FC_STATE_STARTUP_CHARGE"):
+                self.FC_state = FC_startup_charge()
+            elif (self.FC_state == "FC_STATE_RUN"):
+                self.FC_state = FC_run()
+            elif (self.FC_state == "FC_STATE_REPRESSURIZE"):
+                self.FC_state = FC_repressurize()
+
     def main_state_machine(self):
         self.analog_input_values()
         self.digital_input_values()
         self.digital_output_values()
         self.cell_voltages()
+        self.main()
         print "state machine done"
 
+
+
 if __name__ == "__main__":
+    FC_state = "FC_STATE_STANDBY"
     window = Tk()
     gui = TestbenchFCC_GUI(window)
     gui.main_state_machine()
