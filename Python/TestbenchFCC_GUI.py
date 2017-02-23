@@ -6,10 +6,12 @@ Created on Tue Dec 27 03:40:29 2016
 """
 from Tkinter import *
 from ttk import Button, Style
+import time
 from TestBench_GPIO_Constants import *
 from TestBench_GPIO_Functions import *
-import time
 from TestBench_Constants import *
+from TestBench_Functions import *
+import DAQmxFunctions
 
 class TestbenchFCC_GUI(Frame):
     def __init__(self,parent):
@@ -74,8 +76,12 @@ class TestbenchFCC_GUI(Frame):
 
         print(self.CellVoltages_display)
 
-        # GUI Initialization
+        # Build_gui
         self.parent.title("Fuel Cell TestBench of Awesomeness")
+        self.analog_input_values()
+        self.digital_input_values()
+        self.digital_output_values()
+        self.cell_voltages()
 
         print "init done"
 
@@ -274,46 +280,45 @@ class TestbenchFCC_GUI(Frame):
 
                 cell_count += 1
 
+        print "cell voltages done"
+
     def update_cell_voltages(self):
         self.CellVoltages_display = [
             [str(self.CellVoltages[row][col].get()) for col in \
             range(self.FCCellVoltCols)] for row in \
                 range(self.FCCellVoltRows)]
 
-    def main(self):
-        while True:
-            # State machine
-            if (self.FC_state == "FC_STATE_STANDBY"):
-                self.FC_state = FC_standby()
-            elif (self.FC_state == "FC_STATE_SHUTDOWN"):
-                self.FC_state = FC_shutdown()
-            elif (self.FC_state == "FC_STATE_STARTUP_FANS"):
-                # Ignore implementation for now, since fan stuff not working atm
-                pass
-            elif (self.FC_state == "FC_STATE_STARTUP_H2"):
-                self.FC_state = FC_startup_h2()
-            elif (self.FC_state == "FC_STATE_STARTUP_PURGE"):
-                self.FC_state = FC_startup_purge()
-            elif (self.FC_state == "FC_STATE_STARTUP_CHARGE"):
-                self.FC_state = FC_startup_charge()
-            elif (self.FC_state == "FC_STATE_RUN"):
-                self.FC_state = FC_run()
-            elif (self.FC_state == "FC_STATE_REPRESSURIZE"):
-                self.FC_state = FC_repressurize()
-
     def main_state_machine(self):
-        self.analog_input_values()
-        self.digital_input_values()
-        self.digital_output_values()
-        self.cell_voltages()
-        self.main()
-        print "state machine done"
+        if (self.FC_state == "FC_STATE_STANDBY"):
+            self.FC_state = FC_standby()
+        elif (self.FC_state == "FC_STATE_SHUTDOWN"):
+            self.FC_state = FC_shutdown()
+        elif (self.FC_state == "FC_STATE_STARTUP_FANS"):
+            # Ignore implementation for now, since fan stuff not working atm
+            pass
+        elif (self.FC_state == "FC_STATE_STARTUP_H2"):
+            self.FC_state = FC_startup_h2()
+        elif (self.FC_state == "FC_STATE_STARTUP_PURGE"):
+            self.FC_state = FC_startup_purge()
+        elif (self.FC_state == "FC_STATE_STARTUP_CHARGE"):
+            self.FC_state = FC_startup_charge()
+        elif (self.FC_state == "FC_STATE_RUN"):
+            self.FC_state = FC_run()
+        elif (self.FC_state == "FC_STATE_REPRESSURIZE"):
+            self.FC_state = FC_repressurize()
 
-
+        print "state machine"
 
 if __name__ == "__main__":
-    FC_state = "FC_STATE_STANDBY"
+    digital_configure()
+    analog_configure()
     window = Tk()
     gui = TestbenchFCC_GUI(window)
-    gui.main_state_machine()
-    window.mainloop()
+
+    while True:
+        gui.main_state_machine()
+        gui.update_analog_input_values()
+        gui.update_digital_input_values()
+        gui.update_digital_output_values()
+        window.update_idletasks()
+        window.update()
