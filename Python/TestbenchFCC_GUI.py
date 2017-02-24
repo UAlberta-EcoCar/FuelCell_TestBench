@@ -4,14 +4,16 @@ Created on Tue Dec 27 03:40:29 2016
 
 @author: Adnan
 """
+DAQ_Connected = False # Allows Testing GUI without DAQ
 from Tkinter import *
 from ttk import Button, Style
 import time
-from TestBench_GPIO_Constants import *
-from TestBench_GPIO_Functions import *
-from TestBench_Constants import *
-from TestBench_Functions import *
-import DAQmxFunctions
+if DAQ_Connected:
+    from TestBench_GPIO_Constants import *
+    from TestBench_GPIO_Functions import *
+    from TestBench_Constants import *
+    from TestBench_Functions import *
+    import DAQmxFunctions
 
 class TestbenchFCC_GUI(Frame):
     def __init__(self,parent):
@@ -36,35 +38,48 @@ class TestbenchFCC_GUI(Frame):
 
         # Digital Inputs
         self.H2OK = IntVar()
-        self.H2OK.set(0)
         self.FCStart = IntVar()
-        self.FCStart.set(0)
-        self.CapConn = IntVar()
-        self.CapConn.set(0)
-        self.FCConn = IntVar()
-        self.FCConn.set(0)
-        self.ResConn = IntVar()
-        self.ResConn.set(0)
+        if DAQ_Connected:
+            self.H2OK.set(pin_value_get_dig(H20K))
+            self.FCStart.set(pin_value_get_dig_output(START))
+        else:
+            self.H2OK.set(0)
+            self.FCStart.set(0)
+        # self.CapConn = IntVar()
+        # self.CapConn.set(0)
+        # self.FCConn = IntVar()
+        # self.FCConn.set(0)
+        # self.ResConn = IntVar()
+        # self.ResConn.set(0)
 
         # Digital Outputs
         self.FCSupply = IntVar()
-        self.FCSupply.set(0)
         self.FCPurge = IntVar()
-        self.FCPurge.set(0)
         self.StartupRelay = IntVar()
-        self.StartupRelay.set(0)
         self.MotorRelay = IntVar()
-        self.MotorRelay.set(0)
         self.CapRelay = IntVar()
-        self.CapRelay.set(0)
         self.ResistorRelay = IntVar()
-        self.ResistorRelay.set(0)
         self.FCFan1 = IntVar()
-        self.FCFan1.set(0)
+        if DAQ_Connected:
+            self.FCSupply.set(pin_value_get_dig_output(H2_VALVE))
+            self.FCPurge.set(pin_value_get_dig_output(PURGE_VALVE))
+            self.StartupRelay.set(pin_value_get_dig_output(STARTUP_RELAY))
+            self.MotorRelay.set(pin_value_get_dig_output(MOTOR_RELAY))
+            self.CapRelay.set(pin_value_get_dig_output(CAP_RELAY))
+            self.ResistorRelay.set(pin_value_get_dig_output(RESISTOR_RELAY))
+        else:
+            self.FCSupply.set(0)
+            self.FCPurge.set(0)
+            self.StartupRelay.set(0)
+            self.MotorRelay.set(0)
+            self.CapRelay.set(0)
+            self.ResistorRelay.set(0)
+            self.FCFan1.set(0)
 
         # Cell Voltages
         self.FCCellVoltRows = 6
         self.FCCellVoltCols = 4
+        self.FCCellCount = 46
         self.CellVoltages = [
             [DoubleVar() for col in range(self.FCCellVoltCols)]
             for row in range(self.FCCellVoltRows)]
@@ -74,7 +89,7 @@ class TestbenchFCC_GUI(Frame):
                 range(self.FCCellVoltCols)] for row in \
                     range(self.FCCellVoltRows)]
 
-        print(self.CellVoltages_display)
+        # print(self.CellVoltages_display)
 
         # Build_gui
         self.parent.title("Fuel Cell TestBench of Awesomeness")
@@ -167,33 +182,35 @@ class TestbenchFCC_GUI(Frame):
         self.fcstart_display.set(str(self.FCStart.get()))
         Entry(self.parent, textvariable=self.fcstart_display, \
             justify='center').grid(row=dig_in_row1, column=3)
-
-        Label(self.parent, text="FC Conn: ").grid(row=dig_in_row1, column=4)
-        self.fcconn_display = StringVar()
-        self.fcconn_display.set(str(self.FCConn.get()))
-        Entry(self.parent, textvariable=self.fcconn_display, \
-            justify='center').grid(row=dig_in_row1, column=5)
-
-        Label(self.parent, text="Res Conn: ").grid(row=dig_in_row2, column=0)
-        self.resconn_display = StringVar()
-        self.resconn_display.set(str(self.ResConn.get()))
-        Entry(self.parent, textvariable=self.resconn_display, \
-            justify='center').grid(row=dig_in_row2, column=1)
-
-        Label(self.parent, text="Cap Conn: ").grid(row=dig_in_row2, column=2)
-        self.capconn_display = StringVar()
-        self.capconn_display.set(str(self.CapConn.get()))
-        Entry(self.parent, textvariable=self.capconn_display, \
-            justify='center').grid(row=dig_in_row2, column=3)
+        #
+        # Label(self.parent, text="FC Conn: ").grid(row=dig_in_row1, column=4)
+        # self.fcconn_display = StringVar()
+        # self.fcconn_display.set(str(self.FCConn.get()))
+        # Entry(self.parent, textvariable=self.fcconn_display, \
+        #     justify='center').grid(row=dig_in_row1, column=5)
+        #
+        # Label(self.parent, text="Res Conn: ").grid(row=dig_in_row2, column=0)
+        # self.resconn_display = StringVar()
+        # self.resconn_display.set(str(self.ResConn.get()))
+        # Entry(self.parent, textvariable=self.resconn_display, \
+        #     justify='center').grid(row=dig_in_row2, column=1)
+        #
+        # Label(self.parent, text="Cap Conn: ").grid(row=dig_in_row2, column=2)
+        # self.capconn_display = StringVar()
+        # self.capconn_display.set(str(self.CapConn.get()))
+        # Entry(self.parent, textvariable=self.capconn_display, \
+        #     justify='center').grid(row=dig_in_row2, column=3)
 
         print "digital input vals done"
 
     def update_digital_input_values(self):
+        # self.H2OK.set(pin_value_get_dig(H20K))
+        # self.FCStart.set(pin_value_get_dig_output(START))
         self.h20k_display.set(str(self.H2OK.get()))
         self.fcstart_display.set(str(self.FCStart.get()))
-        self.fcconn_display.set(str(self.FCConn.get()))
-        self.resconn_display.set(str(self.ResConn.get()))
-        self.capconn_display.set(str(self.CapConn.get()))
+        # self.fcconn_display.set(str(self.FCConn.get()))
+        # self.resconn_display.set(str(self.ResConn.get()))
+        # self.capconn_display.set(str(self.CapConn.get()))
 
         print "updated digital input vals"
 
@@ -250,6 +267,12 @@ class TestbenchFCC_GUI(Frame):
         print "digital output values done"
 
     def update_digital_output_values(self):
+        # self.FCSupply.set(pin_value_get_dig_output(H2_VALVE))
+        # self.FCPurge.set(pin_value_get_dig_output(PURGE_VALVE))
+        # self.StartupRelay.set(pin_value_get_dig_output(STARTUP_RELAY))
+        # self.MotorRelay.set(pin_value_get_dig_output(MOTOR_RELAY))
+        # self.CapRelay.set(pin_value_get_dig_output(CAP_RELAY))
+        # self.ResistorRelay.set(pin_value_get_dig_output(RESISTOR_RELAY))
         self.fcsupply_display.set(str(self.FCSupply.get()))
         self.fcpurge_display.set(str(self.FCPurge.get()))
         self.fcfan_display.set(str(self.FCFan1.get()))
@@ -289,36 +312,39 @@ class TestbenchFCC_GUI(Frame):
                 range(self.FCCellVoltRows)]
 
     def main_state_machine(self):
-        if (self.FC_state == "FC_STATE_STANDBY"):
-            self.FC_state = FC_standby()
-        elif (self.FC_state == "FC_STATE_SHUTDOWN"):
-            self.FC_state = FC_shutdown()
-        elif (self.FC_state == "FC_STATE_STARTUP_FANS"):
-            # Ignore implementation for now, since fan stuff not working atm
-            pass
-        elif (self.FC_state == "FC_STATE_STARTUP_H2"):
-            self.FC_state = FC_startup_h2()
-        elif (self.FC_state == "FC_STATE_STARTUP_PURGE"):
-            self.FC_state = FC_startup_purge()
-        elif (self.FC_state == "FC_STATE_STARTUP_CHARGE"):
-            self.FC_state = FC_startup_charge()
-        elif (self.FC_state == "FC_STATE_RUN"):
-            self.FC_state = FC_run()
-        elif (self.FC_state == "FC_STATE_REPRESSURIZE"):
-            self.FC_state = FC_repressurize()
+        if DAQ_Connected:
+            if (self.FC_state == "FC_STATE_STANDBY"):
+                self.FC_state = FC_standby()
+            elif (self.FC_state == "FC_STATE_SHUTDOWN"):
+                self.FC_state = FC_shutdown()
+            elif (self.FC_state == "FC_STATE_STARTUP_FANS"):
+                # Ignore implementation for now, since fan stuff not working atm
+                pass
+            elif (self.FC_state == "FC_STATE_STARTUP_H2"):
+                self.FC_state = FC_startup_h2()
+            elif (self.FC_state == "FC_STATE_STARTUP_PURGE"):
+                self.FC_state = FC_startup_purge()
+            elif (self.FC_state == "FC_STATE_STARTUP_CHARGE"):
+                self.FC_state = FC_startup_charge()
+            elif (self.FC_state == "FC_STATE_RUN"):
+                self.FC_state = FC_run()
+            elif (self.FC_state == "FC_STATE_REPRESSURIZE"):
+                self.FC_state = FC_repressurize()
+
+        self.update_analog_input_values()
+        self.update_digital_input_values()
+        self.update_digital_output_values()
 
         print "state machine"
 
 if __name__ == "__main__":
-    digital_configure()
-    analog_configure()
+    if DAQ_Connected:
+        digital_configure()
+        analog_configure()
     window = Tk()
     gui = TestbenchFCC_GUI(window)
 
     while True:
         gui.main_state_machine()
-        gui.update_analog_input_values()
-        gui.update_digital_input_values()
-        gui.update_digital_output_values()
         window.update_idletasks()
         window.update()
