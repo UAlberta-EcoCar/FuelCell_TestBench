@@ -22,19 +22,23 @@ class TestbenchFCC_GUI(Frame):
 
         # Analog Inputs
         self.FCTemp1 = DoubleVar()
-        self.FCTemp1.set(0)
         self.FCTemp2 = DoubleVar()
-        self.FCTemp2.set(0)
         self.FCCurr = DoubleVar()
-        self.FCCurr.set(0)
         self.FCVolt = DoubleVar()
-        self.FCVolt.set(0)
         self.FCPres = DoubleVar()
-        self.FCPres.set(0)
         self.MassFlow = DoubleVar()
-        self.MassFlow.set(0)
         self.CapVolt = DoubleVar()
+        self.FCChargeSLP = DoubleVar()
+        if DAQ_Connected:
+            pass
+        self.FCTemp1.set(10.11)
+        self.FCTemp2.set(1000.11)
+        self.FCCurr.set(0)
+        self.FCVolt.set(0)
+        self.FCPres.set(0)
+        self.MassFlow.set(0)
         self.CapVolt.set(0)
+        self.FCChargeSLP.set(0)
 
         # Digital Inputs
         self.H2OK = IntVar()
@@ -77,26 +81,34 @@ class TestbenchFCC_GUI(Frame):
             self.FCFan1.set(0)
 
         # Cell Voltages
-        self.FCCellVoltRows = 6
-        self.FCCellVoltCols = 4
+        self.FCCellVoltRows = 16
+        self.FCCellVoltCols = 3
         self.FCCellCount = 46
-        self.CellVoltages = [
-            [DoubleVar() for col in range(self.FCCellVoltCols)]
-            for row in range(self.FCCellVoltRows)]
-
-        self.CellVoltages_display = [
-            [str(self.CellVoltages[row][col].get()) for col in \
-                range(self.FCCellVoltCols)] for row in \
-                    range(self.FCCellVoltRows)]
+        self. CellVoltages = []
+        self.CellVoltages_display = []
+        for i in range(self.FCCellCount):
+            self.CellVoltages.append(DoubleVar())
+            self.CellVoltages_display.append(StringVar())
+            self.CellVoltages[i].set(0.0)
+            self.CellVoltages_display[i].set(str(self.CellVoltages[i].get()))
 
         # print(self.CellVoltages_display)
 
         # Build_gui
         self.parent.title("Fuel Cell TestBench of Awesomeness")
+
+        self.entry_width = 10
         self.analog_input_values()
         self.digital_input_values()
         self.digital_output_values()
         self.cell_voltages()
+
+        self.on_colour = "green"
+        self.off_colour = "blue"
+        self.window_width = 1366 # Most common laptop screen resolution size
+        self.window_height = 768
+        self.parent.maxsize(self.window_width,self.window_height)
+        self.parent.minsize(self.window_width,self.window_height)
 
         print "init done"
 
@@ -106,63 +118,71 @@ class TestbenchFCC_GUI(Frame):
 
         Label(self.parent, text="FC Temp 1: ").grid(\
             row=analog_in_row1, column=0)
-        self.fctemp1_display = StringVar()
-        self.fctemp1_display.set(str(self.FCTemp1.get()))
-        Entry(self.parent,textvariable=self.fctemp1_display, \
-            justify='center').grid(row=analog_in_row1, column=1)
+        self.fctemp1_entry = \
+            Entry(self.parent, justify='center', width=self.entry_width)
+        self.fctemp1_entry.grid(row=analog_in_row1, column=1)
 
         Label(self.parent, text="FC Temp 2: ").grid(\
             row=analog_in_row2, column=0)
-        self.fctemp2_display = StringVar()
-        self.fctemp2_display.set(str(self.FCTemp2.get()))
-        Entry(self.parent, textvariable=self.fctemp2_display, \
-            justify='center').grid(row=analog_in_row2, column=1)
+        self.fctemp2_entry = \
+            Entry(self.parent, justify='center', width=self.entry_width)
+        self.fctemp2_entry.grid(row=analog_in_row2, column=1)
 
         Label(self.parent, text="FC Voltage: ").grid(\
             row=analog_in_row1, column=2)
-        self.fcvolt_display = StringVar()
-        self.fcvolt_display.set(str(self.FCVolt.get()))
-        Entry(self.parent, textvariable=self.fcvolt_display, \
-        justify='center').grid(row=analog_in_row1, column=3)
+        self.fcvolt_entry = \
+            Entry(self.parent, justify='center', width=self.entry_width)
+        self.fcvolt_entry.grid(row=analog_in_row1, column=3)
 
         Label(self.parent, text="FC Current: ").grid(\
             row=analog_in_row2, column=2)
-        self.fccurr_display = StringVar()
-        self.fccurr_display.set(str(self.FCCurr.get()))
-        Entry(self.parent,textvariable=self.fccurr_display, \
-            justify='center').grid(row=analog_in_row2, column=3)
+        self.fccurr_entry = \
+            Entry(self.parent, justify='center', width=self.entry_width)
+        self.fccurr_entry.grid(row=analog_in_row2, column=3)
 
         Label(self.parent, text="FC Pressure: ").grid(\
             row=analog_in_row1, column = 4)
-        self.fcpres_display = StringVar()
-        self.fcpres_display.set(str(self.FCPres.get()))
-        Entry(self.parent, textvariable=self.fcpres_display, \
-            justify='center').grid(row=analog_in_row1, column=5)
+        self.fcpres_entry = \
+            Entry(self.parent, justify='center', width=self.entry_width)
+        self.fcpres_entry.grid(row=analog_in_row1, column=5)
 
         Label(self.parent, text="Cap Voltage: ").grid(\
             row=analog_in_row2, column=4)
-        self.capvolt_display = StringVar()
-        self.capvolt_display.set(str(self.CapVolt.get()))
-        Entry(self.parent, textvariable=self.capvolt_display, \
-            justify='center').grid(row=analog_in_row2, column=5)
+        self.capvolt_entry = \
+            Entry(self.parent, justify='center', width=self.entry_width)
+        self.capvolt_entry.grid(row=analog_in_row2, column=5)
 
         Label(self.parent, text="Mass Flow: ").grid(\
             row=analog_in_row1, column=6)
-        self.massflow_display = StringVar()
-        self.massflow_display.set(str(self.MassFlow.get()))
-        Entry(self.parent,textvariable=self.massflow_display, \
-            justify='center').grid(row=analog_in_row1, column=7)
+        self.massflow_entry = \
+            Entry(self.parent, justify='center', width=self.entry_width)
+        self.massflow_entry.grid(row=analog_in_row1, column=7)
+
+        Label(self.parent, text="FC Charge since last purge: ").grid(\
+            row=analog_in_row2, column=6)
+        self.fcchargeslp_entry = \
+            Entry(self.parent, justify='center', width=self.entry_width)
+        self.fcchargeslp_entry.grid(row=analog_in_row2, column=7)
 
         print "analog input vals done"
 
     def update_analog_input_values(self):
-        self.fctemp1_display.set(str(self.FCTemp1.get()))
-        self.fctemp2_display.set(str(self.FCTemp2.get()))
-        self.fcvolt_display.set(str(self.FCVolt.get()))
-        self.fccurr_display.set(str(self.FCCurr.get()))
-        self.fcpres_display.set(str(self.FCPres.get()))
-        self.capvolt_display.set(str(self.CapVolt.get()))
-        self.massflow_display.set(str(self.MassFlow.get()))
+        if DAQ_Connected:
+            pass
+
+        analog_inputs = {
+            'fctemp1': (self.FCTemp1.get(), self.fctemp1_entry),
+            'fctemp2': (self.FCTemp2.get(), self.fctemp2_entry),
+            'fcvolt': (self.FCVolt.get(), self.fcvolt_entry),
+            'fccurr': (self.FCCurr.get(), self.fccurr_entry),
+            'fcpres': (self.FCPres.get(), self.fcpres_entry),
+            'capvolt': (self.CapVolt.get(), self.capvolt_entry),
+            'massflow': (self.MassFlow.get(), self.massflow_entry),
+            'fcchargeslp': (self.FCChargeSLP.get(), self.fcchargeslp_entry)}
+
+        for name, (value, entry) in analog_inputs.items():
+            entry.delete(0, END)
+            entry.insert(0, str(value))
 
         print "updated analog input vals"
 
@@ -172,45 +192,34 @@ class TestbenchFCC_GUI(Frame):
         self.parent.grid_rowconfigure(dig_in_row1, pad=25)
 
         Label(self.parent, text="H20K: ").grid(row=dig_in_row1, column=0)
-        self.h20k_display = StringVar()
-        self.h20k_display.set(str(self.H2OK.get()))
-        Entry(self.parent, textvariable=self.h20k_display, \
-            justify='center').grid(row=dig_in_row1, column=1)
+        self.h2ok_entry = \
+            Entry(self.parent, justify='center', width=self.entry_width)
+        self.h2ok_entry.grid(row=dig_in_row1, column=1)
 
         Label(self.parent, text="FC Start: ").grid(row=dig_in_row1, column=2)
-        self.fcstart_display = StringVar()
-        self.fcstart_display.set(str(self.FCStart.get()))
-        Entry(self.parent, textvariable=self.fcstart_display, \
-            justify='center').grid(row=dig_in_row1, column=3)
-        #
-        # Label(self.parent, text="FC Conn: ").grid(row=dig_in_row1, column=4)
-        # self.fcconn_display = StringVar()
-        # self.fcconn_display.set(str(self.FCConn.get()))
-        # Entry(self.parent, textvariable=self.fcconn_display, \
-        #     justify='center').grid(row=dig_in_row1, column=5)
-        #
-        # Label(self.parent, text="Res Conn: ").grid(row=dig_in_row2, column=0)
-        # self.resconn_display = StringVar()
-        # self.resconn_display.set(str(self.ResConn.get()))
-        # Entry(self.parent, textvariable=self.resconn_display, \
-        #     justify='center').grid(row=dig_in_row2, column=1)
-        #
-        # Label(self.parent, text="Cap Conn: ").grid(row=dig_in_row2, column=2)
-        # self.capconn_display = StringVar()
-        # self.capconn_display.set(str(self.CapConn.get()))
-        # Entry(self.parent, textvariable=self.capconn_display, \
-        #     justify='center').grid(row=dig_in_row2, column=3)
+        self.fcstart_entry = \
+            Entry(self.parent, justify='center', width=self.entry_width)
+        self.fcstart_entry.grid(row=dig_in_row1, column=3)
 
         print "digital input vals done"
 
     def update_digital_input_values(self):
-        # self.H2OK.set(pin_value_get_dig(H20K))
-        # self.FCStart.set(pin_value_get_dig_output(START))
-        self.h20k_display.set(str(self.H2OK.get()))
-        self.fcstart_display.set(str(self.FCStart.get()))
-        # self.fcconn_display.set(str(self.FCConn.get()))
-        # self.resconn_display.set(str(self.ResConn.get()))
-        # self.capconn_display.set(str(self.CapConn.get()))
+        if DAQ_Connected:
+            self.H2OK.set(pin_value_get_dig(H20K))
+            self.FCStart.set(pin_value_get_dig_output(START))
+        else:
+            self.FCStart.set( not self.FCStart.get())
+
+        dig_inputs = {
+            'h20k': (self.H2OK.get(), self.h2ok_entry),
+            'fcstart': (self.FCStart.get(), self.fcstart_entry)}
+
+        for name, (value, entry) in dig_inputs.items():
+            if value == 0:
+                colour = self.off_colour
+            else:
+                colour = self.on_colour
+            entry.configure(bg=colour)
 
         print "updated digital input vals"
 
@@ -220,66 +229,73 @@ class TestbenchFCC_GUI(Frame):
         self.parent.grid_rowconfigure(dig_out_row1, pad=25)
 
         Label(self.parent, text="FC Supply: ").grid(row=dig_out_row1, column=0)
-        self.fcsupply_display = StringVar()
-        self.fcsupply_display.set(str(self.FCSupply.get()))
-        Entry(self.parent, textvariable=self.fcsupply_display, \
-            justify='center').grid(row=dig_out_row1, column=1)
+        self.fcsupply_entry = \
+            Entry(self.parent,justify='center', width=self.entry_width)
+        self.fcsupply_entry.grid(row=dig_out_row1, column=1)
 
         Label(self.parent, text="FC Purge: ").grid(row=dig_out_row2, column=0)
-        self.fcpurge_display = StringVar()
-        self.fcpurge_display.set(str(self.FCPurge.get()))
-        Entry(self.parent, textvariable=self.fcpurge_display, \
-            justify='center').grid(row=dig_out_row2, column=1)
+        self.fcpurge_entry = \
+            Entry(self.parent, justify='center', width=self.entry_width)
+        self.fcpurge_entry.grid(row=dig_out_row2, column=1)
 
         Label(self.parent, text="FC Fan: ").grid(row=dig_out_row1, column=2)
-        self.fcfan_display = StringVar()
-        self.fcfan_display.set(str(self.FCFan1.get()))
-        Entry(self.parent, textvariable=self.fcfan_display, \
-            justify='center').grid(row=dig_out_row1, column=3)
+        self.fcfan_entry = \
+            Entry(self.parent, justify='center', width=self.entry_width)
+        self.fcfan_entry.grid(row=dig_out_row1, column=3)
 
         Label(self.parent, text="Startup Relay: ").grid(\
             row=dig_out_row1, column=4)
-        self.startup_relay_display = StringVar()
-        self.startup_relay_display.set(str(self.StartupRelay.get()))
-        Entry(self.parent, textvariable=self.startup_relay_display, \
-            justify='center').grid(row=dig_out_row1, column=5)
+        self.startup_relay_entry = \
+            Entry(self.parent, justify='center', width=self.entry_width)
+        self.startup_relay_entry.grid(row=dig_out_row1, column=5)
 
         Label(self.parent, text="Motor Relay: ").grid(\
             row=dig_out_row2, column=4)
-        self.motor_relay_display = StringVar()
-        self.motor_relay_display.set(str(self.MotorRelay.get()))
-        Entry(self.parent, textvariable=self.motor_relay_display, \
-            justify='center').grid(row=dig_out_row2, column=5)
+        self.motor_relay_entry = \
+            Entry(self.parent, justify='center', width=self.entry_width)
+        self.motor_relay_entry.grid(row=dig_out_row2, column=5)
 
         Label(self.parent, text="Cap Relay: ").grid(row=dig_out_row1, column=6)
-        self.cap_relay_display = StringVar()
-        self.cap_relay_display.set(str(self.CapRelay.get()))
-        Entry(self.parent, textvariable=self.cap_relay_display, \
-            justify='center').grid(row=dig_out_row1, column=7)
+        self.cap_relay_entry = \
+            Entry(self.parent, justify='center', width=self.entry_width)
+        self.cap_relay_entry.grid(row=dig_out_row1, column=7)
 
         Label(self.parent, text="Resistor Relay: ").grid(\
             row=dig_out_row2, column=6)
-        self.resistor_relay_display = StringVar()
-        self.resistor_relay_display.set(str(self.ResistorRelay.get()))
-        Entry(self.parent, textvariable=self.resistor_relay_display, \
-            justify='center').grid(row=dig_out_row2, column=7)
+        self.resistor_relay_entry = \
+            Entry(self.parent, justify='center', width=self.entry_width)
+        self.resistor_relay_entry.grid(row=dig_out_row2, column=7)
 
         print "digital output values done"
 
     def update_digital_output_values(self):
-        # self.FCSupply.set(pin_value_get_dig_output(H2_VALVE))
-        # self.FCPurge.set(pin_value_get_dig_output(PURGE_VALVE))
-        # self.StartupRelay.set(pin_value_get_dig_output(STARTUP_RELAY))
-        # self.MotorRelay.set(pin_value_get_dig_output(MOTOR_RELAY))
-        # self.CapRelay.set(pin_value_get_dig_output(CAP_RELAY))
-        # self.ResistorRelay.set(pin_value_get_dig_output(RESISTOR_RELAY))
-        self.fcsupply_display.set(str(self.FCSupply.get()))
-        self.fcpurge_display.set(str(self.FCPurge.get()))
-        self.fcfan_display.set(str(self.FCFan1.get()))
-        self.startup_relay_display.set(str(self.StartupRelay.get()))
-        self.motor_relay_display.set(str(self.MotorRelay.get()))
-        self.cap_relay_display.set(str(self.CapRelay.get()))
-        self.resistor_relay_display.set(str(self.ResistorRelay.get()))
+        if DAQ_Connected:
+            self.FCSupply.set(pin_value_get_dig_output(H2_VALVE))
+            self.FCPurge.set(pin_value_get_dig_output(PURGE_VALVE))
+            self.StartupRelay.set(pin_value_get_dig_output(STARTUP_RELAY))
+            self.MotorRelay.set(pin_value_get_dig_output(MOTOR_RELAY))
+            self.CapRelay.set(pin_value_get_dig_output(CAP_RELAY))
+            self.ResistorRelay.set(pin_value_get_dig_output(RESISTOR_RELAY))
+        else:
+            self.FCFan1.set(not self.FCFan1.get())
+
+        dig_outputs = {
+            'fcsupply': (self.FCSupply.get(), self.fcsupply_entry),
+            'fcpurge': (self.FCPurge.get(), self.fcpurge_entry),
+            'fcfan': (self.FCFan1.get(), self.fcfan_entry),
+            'startup_relay': (self.StartupRelay.get(), \
+                self.startup_relay_entry),
+            'motor_relay': (self.MotorRelay.get(), self.motor_relay_entry),
+            'cap_relay': (self.CapRelay.get(), self.cap_relay_entry),
+            'resistor_relay': (self.ResistorRelay.get(), \
+                self.resistor_relay_entry)}
+
+        for name, (value, entry) in dig_outputs.items():
+            if value == 0:
+                colour = self.off_colour
+            else:
+                colour = self.on_colour
+            entry.configure(bg=colour)
 
         print "updated digital output values"
 
@@ -287,21 +303,27 @@ class TestbenchFCC_GUI(Frame):
         start_row = 6
         self.parent.grid_rowconfigure(start_row, pad=25)
 
-        cell_count = 0
+        cell_num = 0
         for y in range(self.FCCellVoltRows):
             for x in range(self.FCCellVoltCols):
+                label_text = "Cell" + str(cell_num) + ": "
+                label_config = {'text':label_text,
+                                'width':self.entry_width}
+                Label(self.parent, **label_config).grid(\
+                    row=start_row + y, column=2*x)
 
-                label_text = "Cell" + str(cell_count) + ": "
-                Label(self.parent, text=label_text).grid(row=start_row + y, \
-                    column=2*x)
-
-                print(self.CellVoltages_display[y][x])
-                entry_config = {'text':self.CellVoltages_display[y][x],
-                                'justify':'center'}
+                print(self.CellVoltages_display[cell_num])
+                entry_config = {'text':self.CellVoltages_display[cell_num],
+                                'justify':'center',
+                                'width':self.entry_width}
                 Entry(self.parent, **entry_config).grid(\
                     row =start_row + y, column=2*x + 1)
 
-                cell_count += 1
+                cell_num += 1
+                if cell_num >= self.FCCellCount:
+                    break
+            if cell_num >= self.FCCellCount:
+                break
 
         print "cell voltages done"
 
@@ -312,28 +334,31 @@ class TestbenchFCC_GUI(Frame):
                 range(self.FCCellVoltRows)]
 
     def main_state_machine(self):
-        if DAQ_Connected:
-            if (self.FC_state == "FC_STATE_STANDBY"):
-                self.FC_state = FC_standby()
-            elif (self.FC_state == "FC_STATE_SHUTDOWN"):
-                self.FC_state = FC_shutdown()
-            elif (self.FC_state == "FC_STATE_STARTUP_FANS"):
-                # Ignore implementation for now, since fan stuff not working atm
-                pass
-            elif (self.FC_state == "FC_STATE_STARTUP_H2"):
-                self.FC_state = FC_startup_h2()
-            elif (self.FC_state == "FC_STATE_STARTUP_PURGE"):
-                self.FC_state = FC_startup_purge()
-            elif (self.FC_state == "FC_STATE_STARTUP_CHARGE"):
-                self.FC_state = FC_startup_charge()
-            elif (self.FC_state == "FC_STATE_RUN"):
-                self.FC_state = FC_run()
-            elif (self.FC_state == "FC_STATE_REPRESSURIZE"):
-                self.FC_state = FC_repressurize()
+        while True:
+            if DAQ_Connected:
+                if (self.FC_state == "FC_STATE_STANDBY"):
+                    self.FC_state = FC_standby()
+                elif (self.FC_state == "FC_STATE_SHUTDOWN"):
+                    self.FC_state = FC_shutdown()
+                elif (self.FC_state == "FC_STATE_STARTUP_FANS"):
+                    # Ignore implementation for now, since fan stuff not working atm
+                    pass
+                elif (self.FC_state == "FC_STATE_STARTUP_H2"):
+                    self.FC_state = FC_startup_h2()
+                elif (self.FC_state == "FC_STATE_STARTUP_PURGE"):
+                    self.FC_state = FC_startup_purge()
+                elif (self.FC_state == "FC_STATE_STARTUP_CHARGE"):
+                    self.FC_state = FC_startup_charge()
+                elif (self.FC_state == "FC_STATE_RUN"):
+                    self.FC_state = FC_run()
+                elif (self.FC_state == "FC_STATE_REPRESSURIZE"):
+                    self.FC_state = FC_repressurize()
 
-        self.update_analog_input_values()
-        self.update_digital_input_values()
-        self.update_digital_output_values()
+            self.update_analog_input_values()
+            self.update_digital_input_values()
+            self.update_digital_output_values()
+            self.parent.update_idletasks()
+            self.parent.update()
 
         print "state machine"
 
@@ -343,8 +368,4 @@ if __name__ == "__main__":
         analog_configure()
     window = Tk()
     gui = TestbenchFCC_GUI(window)
-
-    while True:
-        gui.main_state_machine()
-        window.update_idletasks()
-        window.update()
+    gui.main_state_machine()
