@@ -1,4 +1,4 @@
-currDev = "Dev1" #are we using this?
+DAQ_dev_name = "Dev3"
 #1st value is the port number, 2nd value is the line number
 
 #analog inputs
@@ -6,7 +6,7 @@ TEST = "13"
 
 #digital inputs
 START = [0, 1]
-H2OK = [0, 0]
+H20K = [0, 0]
 
 #digital outputs
 H2_VALVE = [1, 0]
