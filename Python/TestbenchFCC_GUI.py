@@ -98,8 +98,8 @@ class TestbenchFCC_GUI(Frame):
 
         # Build_gui
         self.parent.title("Fuel Cell TestBench of Awesomeness")
-        self.window_width = 1366 # Most common laptop screen resolution size
-        self.window_height = 768
+        self.window_width = 1200 # Most common laptop screen resolution size
+        self.window_height = 675
         self.parent.maxsize(self.window_width,self.window_height)
         self.parent.minsize(self.window_width,self.window_height)
 
@@ -463,6 +463,7 @@ class TestbenchFCC_GUI(Frame):
             self.update_debug()
             self.parent.update_idletasks()
             self.parent.update()
+            self.main_state_machine()
 
         print "state machine"
 

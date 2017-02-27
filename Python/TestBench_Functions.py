@@ -18,8 +18,7 @@ purge_state = "FIRST_PURGE_CYCLE"
 
 def FC_standby():
     if pin_value_get_dig(START):
-        #change fan state to startup fans
-        FC_state = "FC_STATE_STARTUP_FANS"
+        FC_state = "FC_STATE_STARTUP_H2"
     else:
         #make sure fuel cell stays off
         #supply valve closed

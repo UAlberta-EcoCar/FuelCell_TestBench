@@ -11,6 +11,37 @@ def pin_value_get_ana(pin_name):
     analog_input_object = MultiChannelAnalogInput([DAQ_dev_name + "/ai" + pin_name])
     analog_input_object.configure()
     return analog_input_object.read()
+    
+#def analog_configure2():
+#    if type(physicalChannel) == type(""):
+#            self.physicalChannel = [physicalChannel]
+#        else:
+#            self.physicalChannel  =physicalChannel
+#        self.numberOfChannel = physicalChannel.__len__()
+#        if limit is None:
+#            self.limit = dict([(name, (-10.0,10.0)) for name in self.physicalChannel])
+#        elif type(limit) == tuple:
+#            self.limit = dict([(name, limit) for name in self.physicalChannel])
+#        else:
+#            self.limit = dict([(name, limit[i]) for  i,name in enumerate(self.physicalChannel)])           
+#        if reset:
+#            DAQmxResetDevice(physicalChannel[0].split('/')[0] )
+#
+#
+#    taskHandles = dict([(name,TaskHandle(0)) for name in self.physicalChannel])
+#        for name in self.physicalChannel:
+#            DAQmxCreateTask("",byref(taskHandles[name]))
+#            DAQmxCreateAIVoltageChan(taskHandles[name],name,"",DAQmx_Val_RSE,
+#                                     self.limit[name][0],self.limit[name][1],
+#                                     DAQmx_Val_Volts,None)
+#        self.taskHandles = taskHandles
+
+
+      
+def pin_value_get_ana2(pin_name):
+    analog_input_object = MultiChannelAnalogInput([DAQ_dev_name + "/ai" + pin_name])
+    analog_input_object.configure()
+    return analog_input_object.read()
 
 def digital_configure():
     global digital_port_line
