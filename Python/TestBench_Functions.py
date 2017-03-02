@@ -3,6 +3,8 @@ from TestBench_GPIO_Constants import *
 from TestBench_GPIO_Functions import *
 import time
 from TestBench_Constants import *
+from TestBench_ADC import *
+from TestBench_PID import *
 
 #start_delay not needed, it is a value in not working fan function
 charge_thres = 35000

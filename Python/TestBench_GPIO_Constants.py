@@ -1,4 +1,4 @@
-DAQ_dev_name = "Dev3"
+DAQ_dev_name = "Dev1"
 #1st value is the port number, 2nd value is the line number
 
 #analog inputs

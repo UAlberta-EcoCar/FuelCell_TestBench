@@ -6,6 +6,7 @@ Created on Sat Feb 25 16:39:54 2017
 """
 from TestBench_ADC_Constants import *
 from TestBench_GPIO_Functions import *
+from TestBench_AnalogDefs import *
 
 def convert_temp(temp_reading_raw):
     # Third order polynomial. Check Systems Drive for calculations
@@ -38,6 +39,6 @@ def get_CAPVOLT():
 	#CAPVOLT = DAQReading * (10k + 1k) / 1k
 
 def get_FCVOLT():
-	return((FCVOLTReading) * FCVOLTCoefficient)
+	return((FCVOLT) * FCVOLTCoefficient)
 	#10k and 1k voltage divider
 	#FCVolt = DAQReading * (10k + 1k) / 1k

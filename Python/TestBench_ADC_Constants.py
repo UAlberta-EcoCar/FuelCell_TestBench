@@ -16,7 +16,7 @@ TANKPRESCoefficient = 0
 TANKPRESConst = 0
 TEMPCoefficient_x3 = -1.9553
 TEMPCoefficient_x2 = 16.15
-TEMPCoefficient_x1 = -59.671
+TEMPCoefficient_x = -59.671
 TEMPConst = 103.39
 
 # Using the equation y = -1.9553x3 + 16.15x2 - 59.671x + 103.39

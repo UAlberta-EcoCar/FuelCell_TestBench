@@ -15,6 +15,9 @@ past_temperature = 0
 time_passed = 0
 
 def PID(currentTemp, setPoint):
+  global time_passed
+  global accumulated_error
+  global past_temperature
   currentTemp = currentTemp / 1000 
   setPoint = setPoint / 1000
   
@@ -39,7 +42,7 @@ def PID(currentTemp, setPoint):
   
   #precaution against possible negative numbers
   if(setPoint < 0):
-	  setPoint = 0
+	  setPoint = 0.001
   return(setPoint)
 
 def initialize_pid():
