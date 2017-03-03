@@ -32,4 +32,4 @@ while 1:
     elif (FC_state == "FC_STATE_REPRESSURIZE"):
         FC_state = FC_repressurize()
     print pin_value_get_dig_output(H2_VALVE), pin_value_get_dig_output(PURGE_VALVE), pin_value_get_dig_output(STARTUP_RELAY), pin_value_get_dig_output(MOTOR_RELAY), pin_value_get_dig_output(CAP_RELAY), pin_value_get_dig_output(RESISTOR_RELAY), FC_state
-    print get_FCVOLT(), get_FCCURR()
+    print get_FCVOLT(), get_FCCURR(), get_CAPVOLT(), get_CAPCURR()
