@@ -10,7 +10,8 @@ def analog_configure():
 def pin_value_get_ana(pin_name):
     analog_input_object = MultiChannelAnalogInput([DAQ_dev_name + "/ai" + pin_name])
     analog_input_object.configure()
-    return analog_input_object.read()
+    analog_value = analog_input_object.read()
+    return analog_value[0]
     
 #def analog_configure2():
 #    if type(physicalChannel) == type(""):
@@ -42,7 +43,7 @@ def pin_value_get_ana2(pin_name):
     analog_input_object = MultiChannelAnalogInput([DAQ_dev_name + "/ai" + pin_name])
     analog_input_object.configure()
     analog_value = analog_input_object.read()
-    return analog_value[0]
+    return (analog_value[0])
 
 def digital_configure():
     global digital_port_line

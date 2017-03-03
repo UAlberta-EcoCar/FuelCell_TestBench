@@ -19,7 +19,7 @@ TEMPCoefficient_x2 = 16.15
 TEMPCoefficient_x = -59.671
 TEMPConst = 103.39
 
-# Using the equation y = -1.9553x3 + 16.15x2 - 59.671x + 103.39
+# Using the equation y = -1.9553x^3 + 16.15x^2 - 59.671x + 103.39
 # Check Gdrive for Excel document showing curve fit data
 # Excluded temperatures from -25 to -40 deg C and 85 to 125 deg C
 # to make calculation easier on Python code. More temperatures would mean

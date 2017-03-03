@@ -15,11 +15,14 @@ past_temperature = 0
 time_passed = 0
 
 def PID(currentTemp, setPoint):
+  global P_control
+  global I_control
+  global D_control
   global time_passed
   global accumulated_error
   global past_temperature
-  currentTemp = currentTemp / 1000 
-  setPoint = setPoint / 1000
+  currentTemp = currentTemp
+  setPoint = setPoint
   
   #proportional part
   p_value = 0
@@ -38,11 +41,13 @@ def PID(currentTemp, setPoint):
 
   time_passed = time.clock() #record past run time
   past_temperature = currentTemp
-  setPoint = ((p_value + i_value + d_value)) #scale value down
+  setPoint = ((p_value + i_value + d_value)/1023) #scale value down
   
   #precaution against possible negative numbers
-  if(setPoint < 0):
+  if(setPoint < 0.001):
 	  setPoint = 0.001
+  elif(setPoint > 0.999):
+      setPoint = 0.999
   return(setPoint)
 
 def initialize_pid():

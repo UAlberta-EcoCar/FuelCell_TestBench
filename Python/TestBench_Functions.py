@@ -184,6 +184,7 @@ def FC_startup_charge():
             purge_state = "PURGE_VALVE_CLOSED"
 
     if (time.clock() - fan_update_timer > FANUPDATE_INTERVAL):
+        print PID(get_FCTEMP(), calc_opt_temp()), "duty cycle"
         FANUpdate(PID(get_FCTEMP(), calc_opt_temp()))
         fan_update_timer = time.clock()
 
@@ -254,6 +255,7 @@ def FC_run():
     global fan_update_timer
 
     if (time.clock() - fan_update_timer > FANUPDATE_INTERVAL):
+        print PID(get_FCTEMP(), calc_opt_temp()), "duty_cycle"
         FANUpdate(PID(get_FCTEMP(), calc_opt_temp()))
         fan_update_timer = time.clock()
 
