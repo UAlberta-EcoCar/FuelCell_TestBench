@@ -17,28 +17,28 @@ def convert_temp(temp_reading_raw):
     return temp_reading
 
 def get_FCTEMP():
-    return (convert_temp((pin_value_get_ana(FCTEMP1) + 
-                pin_value_get_ana(FCTEMP2))/2))
+    return (convert_temp((pin_value_get_ana(FCTEMP1)[0] +
+                pin_value_get_ana(FCTEMP2)[0])/2))
     
 def get_FCPRES():
-	return (pin_value_get_ana(FCPRES) * FCPRESCoefficient - FCPRESConst)
+	return (pin_value_get_ana(FCPRES)[0] * FCPRESCoefficient - FCPRESConst)
  
 def get_CAPCURR():
-	return (pin_value_get_ana(CAPCURR) * CAPCURRCoefficient)
+	return (pin_value_get_ana(CAPCURR)[0] * CAPCURRCoefficient)
 
 def get_FCCURR():
-	val = pin_value_get_ana(FCCURR) * FCCURRCoefficient
+	val = pin_value_get_ana(FCCURR)[0] * FCCURRCoefficient
 	if val < 0: #filter out negative numbers b/c they mess with the current integration algorithm
 		return (0)
 	else:
 		return (val)
 
 def get_CAPVOLT():
-	return (pin_value_get_ana(CAPVOLT) * CAPVOLTCoefficient)
+	return (pin_value_get_ana(CAPVOLT)[0] * CAPVOLTCoefficient)
 	#10k and 1k voltage divider
 	#CAPVOLT = DAQReading * (10k + 1k) / 1k
 
 def get_FCVOLT():
-	return((FCVOLT) * FCVOLTCoefficient)
+	return(pin_value_get_ana(FCVOLT)[0] * FCVOLTCoefficient)
 	#10k and 1k voltage divider
 	#FCVolt = DAQReading * (10k + 1k) / 1k

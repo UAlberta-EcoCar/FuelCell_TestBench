@@ -18,8 +18,33 @@
       <file leaf-file-name="main.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="504">
-              <caret line="24" column="34" lean-forward="true" selection-start-line="24" selection-start-column="34" selection-end-line="24" selection-end-column="34" />
+            <state relative-caret-position="600">
+              <caret line="34" column="36" lean-forward="false" selection-start-line="34" selection-start-column="36" selection-end-line="34" selection-end-column="36" />
+              <folding>
+                <element signature="e#85#123#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="TestBench_GPIO_Functions.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/TestBench_GPIO_Functions.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="177">
+              <caret line="113" column="18" lean-forward="true" selection-start-line="113" selection-start-column="18" selection-end-line="113" selection-end-column="18" />
+              <folding>
+                <element signature="e#0#37#0" expanded="true" />
+                <marker date="1488419077849" expanded="true" signature="241:293" ph="..." />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="TestBench_Functions.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/TestBench_Functions.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="567">
+              <caret line="268" column="31" lean-forward="true" selection-start-line="268" selection-start-column="31" selection-end-line="268" selection-end-column="31" />
               <folding>
                 <element signature="e#85#123#0" expanded="true" />
               </folding>
@@ -30,38 +55,18 @@
       <file leaf-file-name="TestBench_GPIO_Constants.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/TestBench_GPIO_Constants.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="147">
-              <caret line="7" column="14" lean-forward="true" selection-start-line="7" selection-start-column="14" selection-end-line="7" selection-end-column="14" />
+            <state relative-caret-position="231">
+              <caret line="11" column="0" lean-forward="true" selection-start-line="11" selection-start-column="0" selection-end-line="11" selection-end-column="0" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="TestBench_Functions.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/TestBench_Functions.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="386">
-              <caret line="186" column="53" lean-forward="true" selection-start-line="186" selection-start-column="53" selection-end-line="186" selection-end-column="53" />
-              <folding>
-                <element signature="e#85#123#0" expanded="true" />
-                <element signature="e#3332#3363#0" expanded="false" />
-                <element signature="e#3397#3417#0" expanded="false" />
-                <element signature="e#3457#3501#0" expanded="false" />
-                <element signature="e#3537#3571#0" expanded="false" />
-                <element signature="e#3596#3625#0" expanded="false" />
-                <element signature="e#7203#7244#0" expanded="false" />
-                <element signature="e#7271#7310#0" expanded="false" />
-                <element signature="e#7337#7380#0" expanded="false" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="TestBench_PID.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="TestBench_PID.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/TestBench_PID.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="116">
-              <caret line="22" column="2" lean-forward="true" selection-start-line="22" selection-start-column="2" selection-end-line="22" selection-end-column="2" />
+            <state relative-caret-position="798">
+              <caret line="38" column="49" lean-forward="false" selection-start-line="38" selection-start-column="49" selection-end-line="38" selection-end-column="49" />
               <folding />
             </state>
           </provider>
@@ -70,8 +75,8 @@
       <file leaf-file-name="TestBench_ADC.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/TestBench_ADC.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="425">
-              <caret line="41" column="18" lean-forward="false" selection-start-line="41" selection-start-column="18" selection-end-line="41" selection-end-column="18" />
+            <state relative-caret-position="563">
+              <caret line="41" column="38" lean-forward="false" selection-start-line="41" selection-start-column="38" selection-end-line="41" selection-end-column="38" />
               <folding>
                 <element signature="e#84#121#0" expanded="true" />
               </folding>
@@ -82,18 +87,8 @@
       <file leaf-file-name="TestBench_ADC_Constants.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/TestBench_ADC_Constants.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="357">
-              <caret line="17" column="26" lean-forward="true" selection-start-line="17" selection-start-column="26" selection-end-line="17" selection-end-column="26" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="DAQmxConfig.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/DAQmxConfig.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="578">
-              <caret line="93" column="81" lean-forward="false" selection-start-line="93" selection-start-column="81" selection-end-line="93" selection-end-column="81" />
+            <state relative-caret-position="231">
+              <caret line="11" column="51" lean-forward="true" selection-start-line="11" selection-start-column="51" selection-end-line="11" selection-end-column="51" />
               <folding />
             </state>
           </provider>
@@ -112,8 +107,8 @@
       <file leaf-file-name="TestBench_Constants.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/TestBench_Constants.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="210">
-              <caret line="10" column="31" lean-forward="true" selection-start-line="10" selection-start-column="31" selection-end-line="10" selection-end-column="31" />
+            <state relative-caret-position="579">
+              <caret line="43" column="23" lean-forward="true" selection-start-line="43" selection-start-column="23" selection-end-line="43" selection-end-column="23" />
               <folding />
             </state>
           </provider>
@@ -123,7 +118,7 @@
         <entry file="file://$PROJECT_DIR$/TestBench_AnalogDefs.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="336">
-              <caret line="16" column="14" lean-forward="true" selection-start-line="16" selection-start-column="14" selection-end-line="16" selection-end-column="14" />
+              <caret line="16" column="14" lean-forward="false" selection-start-line="16" selection-start-column="14" selection-end-line="16" selection-end-column="14" />
               <folding />
             </state>
           </provider>
@@ -142,6 +137,7 @@
     <findStrings>
       <find>Task</find>
       <find>pin_value_get_dig</find>
+      <find>delta_t</find>
     </findStrings>
   </component>
   <component name="IdeDocumentHistory">
@@ -154,21 +150,21 @@
         <option value="$PROJECT_DIR$/ContinuousPulseTrainGeneration.py" />
         <option value="$PROJECT_DIR$/TestBench_GPIO_Functions.py" />
         <option value="$PROJECT_DIR$/TestBench_Constants.py" />
-        <option value="$PROJECT_DIR$/main.py" />
         <option value="$PROJECT_DIR$/TestBench_GPIO_Constants.py" />
         <option value="$PROJECT_DIR$/TestbenchFCC_GUI.py" />
         <option value="$PROJECT_DIR$/TestBench_ADC_Constants.py" />
-        <option value="$PROJECT_DIR$/TestBench_ADC.py" />
-        <option value="$PROJECT_DIR$/TestBench_Functions.py" />
         <option value="$PROJECT_DIR$/TestBench_PID.py" />
+        <option value="$PROJECT_DIR$/TestBench_ADC.py" />
+        <option value="$PROJECT_DIR$/main.py" />
+        <option value="$PROJECT_DIR$/TestBench_Functions.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="-1928" />
-    <option name="y" value="-83" />
-    <option name="width" value="1296" />
-    <option name="height" value="705" />
+    <option name="x" value="-8" />
+    <option name="y" value="-8" />
+    <option name="width" value="1936" />
+    <option name="height" value="1066" />
   </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
@@ -453,15 +449,15 @@
     </history-entry>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-1928" y="-83" width="1296" height="705" extended-state="6" />
-    <editor active="true" />
+    <frame x="-8" y="-8" width="1936" height="1066" extended-state="6" />
+    <editor active="false" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32698768" sideWeight="0.50208336" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.5292887" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.49201277" sideWeight="0.49791667" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2332636" sideWeight="0.49791667" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
@@ -480,7 +476,7 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="20" />
+      <option name="time" value="21" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -744,24 +740,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/TestBench_GPIO_Functions.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="21">
-          <caret line="118" column="25" lean-forward="false" selection-start-line="118" selection-start-column="25" selection-end-line="118" selection-end-column="25" />
-          <folding>
-            <element signature="e#0#37#0" expanded="true" />
-            <marker date="1488419077849" expanded="true" signature="241:293" ph="..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/ContinuousPulseTrainGeneration.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="578">
           <caret line="39" column="8" lean-forward="false" selection-start-line="38" selection-start-column="8" selection-end-line="39" selection-end-column="8" />
-          <folding>
-            <element signature="e#19#55#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -769,14 +751,40 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="103">
           <caret line="5" column="18" lean-forward="false" selection-start-line="5" selection-start-column="18" selection-end-line="5" selection-end-column="18" />
-          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/DAQmxConfig.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="578">
+        <state relative-caret-position="1848">
           <caret line="93" column="81" lean-forward="false" selection-start-line="93" selection-start-column="81" selection-end-line="93" selection-end-column="81" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/TestBench_GPIO_Functions.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="177">
+          <caret line="113" column="18" lean-forward="true" selection-start-line="113" selection-start-column="18" selection-end-line="113" selection-end-column="18" />
+          <folding>
+            <element signature="e#0#37#0" expanded="true" />
+            <marker date="1488419077849" expanded="true" signature="241:293" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/TestBench_PID.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="798">
+          <caret line="38" column="49" lean-forward="false" selection-start-line="38" selection-start-column="49" selection-end-line="38" selection-end-column="49" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/TestBench_ADC_Constants.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="231">
+          <caret line="11" column="51" lean-forward="true" selection-start-line="11" selection-start-column="51" selection-end-line="11" selection-end-column="51" />
           <folding />
         </state>
       </provider>
@@ -791,16 +799,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/TestBench_Constants.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="210">
-          <caret line="10" column="31" lean-forward="true" selection-start-line="10" selection-start-column="31" selection-end-line="10" selection-end-column="31" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/TestBench_ADC_Constants.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="357">
-          <caret line="17" column="26" lean-forward="true" selection-start-line="17" selection-start-column="26" selection-end-line="17" selection-end-column="26" />
+        <state relative-caret-position="579">
+          <caret line="43" column="23" lean-forward="true" selection-start-line="43" selection-start-column="23" selection-end-line="43" selection-end-column="23" />
           <folding />
         </state>
       </provider>
@@ -808,62 +808,46 @@
     <entry file="file://$PROJECT_DIR$/TestBench_AnalogDefs.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="336">
-          <caret line="16" column="14" lean-forward="true" selection-start-line="16" selection-start-column="14" selection-end-line="16" selection-end-column="14" />
+          <caret line="16" column="14" lean-forward="false" selection-start-line="16" selection-start-column="14" selection-end-line="16" selection-end-column="14" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/TestBench_ADC.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="425">
-          <caret line="41" column="18" lean-forward="false" selection-start-line="41" selection-start-column="18" selection-end-line="41" selection-end-column="18" />
+        <state relative-caret-position="563">
+          <caret line="41" column="38" lean-forward="false" selection-start-line="41" selection-start-column="38" selection-end-line="41" selection-end-column="38" />
           <folding>
             <element signature="e#84#121#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/main.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="600">
+          <caret line="34" column="36" lean-forward="false" selection-start-line="34" selection-start-column="36" selection-end-line="34" selection-end-column="36" />
+          <folding>
+            <element signature="e#85#123#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/TestBench_GPIO_Constants.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="147">
-          <caret line="7" column="14" lean-forward="true" selection-start-line="7" selection-start-column="14" selection-end-line="7" selection-end-column="14" />
+        <state relative-caret-position="231">
+          <caret line="11" column="0" lean-forward="true" selection-start-line="11" selection-start-column="0" selection-end-line="11" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/TestBench_Functions.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="386">
-          <caret line="186" column="53" lean-forward="true" selection-start-line="186" selection-start-column="53" selection-end-line="186" selection-end-column="53" />
-          <folding>
-            <element signature="e#85#123#0" expanded="true" />
-            <element signature="e#3332#3363#0" expanded="false" />
-            <element signature="e#3397#3417#0" expanded="false" />
-            <element signature="e#3457#3501#0" expanded="false" />
-            <element signature="e#3537#3571#0" expanded="false" />
-            <element signature="e#3596#3625#0" expanded="false" />
-            <element signature="e#7203#7244#0" expanded="false" />
-            <element signature="e#7271#7310#0" expanded="false" />
-            <element signature="e#7337#7380#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/main.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="504">
-          <caret line="24" column="34" lean-forward="true" selection-start-line="24" selection-start-column="34" selection-end-line="24" selection-end-column="34" />
+        <state relative-caret-position="567">
+          <caret line="268" column="31" lean-forward="true" selection-start-line="268" selection-start-column="31" selection-end-line="268" selection-end-column="31" />
           <folding>
             <element signature="e#85#123#0" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/TestBench_PID.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="116">
-          <caret line="22" column="2" lean-forward="true" selection-start-line="22" selection-start-column="2" selection-end-line="22" selection-end-column="2" />
-          <folding />
         </state>
       </provider>
     </entry>

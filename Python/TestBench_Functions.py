@@ -7,7 +7,7 @@ from TestBench_ADC import *
 from TestBench_PID import *
 
 #start_delay not needed, it is a value in not working fan function
-charge_thres = 35000
+charge_thres = 35 #35 volts
 purge_counter = 0
 purge_timer = 0
 repress_delay = 0
@@ -48,7 +48,7 @@ def FC_startup_h2():
     pin_value_set_dig(CAP_RELAY, 0)
 
     #input h2 until voltage reaches 30
-    if (get_FCVOLT() < 30000):
+    if (get_FCVOLT() < 30):
         #loop back into same state
         FC_state = "FC_STATE_STARTUP_H2"
     else:
@@ -152,7 +152,7 @@ def FC_startup_charge():
     if (delta_purge_time > PURGE_INTEGRATION_INTERVAL):
         mAms_since_last_purge = mAms_since_last_purge + delta_purge_time * get_FCCURR()
         time_since_last_purge = time_since_last_purge + delta_purge_time
-        uJ_since_last_purge = uJ_since_last_purge + delta_purge_time * get_FCCURR() * get_FCVOLT() / 1000
+        uJ_since_last_purge = uJ_since_last_purge + delta_purge_time * get_FCCURR() * get_FCVOLT()
         purge_integration_timer = time.clock()
 
     if (mAms_since_last_purge > PURGE_THRESHOLD):
@@ -189,8 +189,8 @@ def FC_startup_charge():
 
     delta_t = time.clock() - total_charge_energy_integration_timer
     if (delta_t > TOTAL_CHARGE_ENERGY_INTEGRATION_INTERVAL):
-        estimated_total_E = estimated_total_E + get_FCVOLT() * get_FCCURR() * delta_t / 1000000
-        estimated_total_charge_extracted = estimated_total_charge_extracted + get_FCCURR() * delta_t / 1000
+        estimated_total_E = estimated_total_E + get_FCVOLT() * get_FCCURR() * delta_t
+        estimated_total_charge_extracted = estimated_total_charge_extracted + get_FCCURR() * delta_t
         total_charge_energy_integration_timer = time.clock()
 
     if (get_CAPVOLT() < charge_thres):
@@ -207,7 +207,7 @@ def FC_startup_charge():
 
         delay_timer2 = time.clock()
     else:#caps are charged
-        charge_thres = 33000
+        charge_thres = 33 #33 volts
 
         if (time.clock() - delay_timer2 < 4):
             return "FC_STATE_STARTUP_CHARGE"
@@ -223,7 +223,7 @@ def calc_opt_temp():
     return (53 * get_FCCURR() / 100) + 299160
 
 def calc_min_temp():
-    return (53*get_FCCURR() / 100) + 279248
+    return (53 * get_FCCURR() / 100) + 279248
 
 def calc_max_temp():
     return (355 * get_FCCURR() / 1000) + 325150
@@ -254,7 +254,7 @@ def FC_run():
     delta_purge_timer = time.clock() - purge_integration_timer
     if (delta_purge_timer > PURGE_INTEGRATION_INTERVAL):
         mAms_since_last_purge = mAms_since_last_purge + delta_purge_time * get_FCCURR()
-        uJ_since_last_purge = uJ_since_last_purge + delta_purge_time * get_FCCURR() * get_FCVOLT() / 1000
+        uJ_since_last_purge = uJ_since_last_purge + delta_purge_time * get_FCCURR() * get_FCVOLT()
         purge_integration_timer = time.clock()
         time_since_last_purge = time_since_last_purge + delta_purge_time
 
@@ -287,8 +287,8 @@ def FC_run():
 
     delta_t = time.clock() - total_charge_energy_integration_timer
     if (delta_t > TOTAL_CHARGE_ENERGY_INTEGRATION_INTERVAL):
-        estimated_total_E = estimated_total_E + get_FCVOLT() * get_FCCURR() * delta_t / 1000000
-        estimated_total_charge_extracted = estimated_total_charge_extracted + get_FCCURR() * delta_t / 1000
+        estimated_total_E = estimated_total_E + get_FCVOLT() * get_FCCURR() * delta_t
+        estimated_total_charge_extracted = estimated_total_charge_extracted + get_FCCURR() * delta_t
         total_charge_energy_integration_timer = time.clock()
 
     FC_state = "FC_STATE_RUN"
