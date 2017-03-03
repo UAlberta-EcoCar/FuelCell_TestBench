@@ -219,14 +219,20 @@ def FC_startup_charge():
 
     return FC_state
 
+#MAN5100319 - FCgen 1020ACS Product Manual, section 4.3.2, page 55
 def calc_opt_temp():
-    return (53 * get_FCCURR() / 100) + 299160
+    return (0.53 * get_FCCURR()) + 26.01
 
+#potential thing to do in the future, use polynomial fit instead of piece-wise function
 def calc_min_temp():
-    return (53 * get_FCCURR() / 100) + 279248
+    return (0.53 * get_FCCURR()) + 6.098
 
 def calc_max_temp():
-    return (355 * get_FCCURR() / 1000) + 325150
+    #if get_FCCURR() >= 64.8: #future improvement
+    #    return 75
+    #else:
+    return (0.355 * get_FCCURR()) + 52
+#--
 
 def FC_run():
     global repress_delay
