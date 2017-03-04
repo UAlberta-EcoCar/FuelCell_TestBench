@@ -11,18 +11,24 @@ from TestBench_AnalogDefs import *
 def convert_temp(temp_reading_raw):
     # Third order polynomial. Check Systems Drive for calculations
     temp_reading = ((TEMPCoefficient_x3 * temp_reading_raw**3) +
-        (TEMPCoefficient_x2 * temp_reading_raw**2) + 
-        (TEMPCoefficient_x * temp_reading_raw) + 
+        (TEMPCoefficient_x2 * temp_reading_raw**2) +
+        (TEMPCoefficient_x * temp_reading_raw) +
         TEMPConst)
     return temp_reading
+
+def get_FCTEMP1():
+    return convert_temp(pin_value_get_ana(FCTEMP1))
+
+def get_FCTEMP2():
+    return convert_temp(pin_value_get_ana(FCTEMP2))
 
 def get_FCTEMP():
     return (convert_temp((pin_value_get_ana(FCTEMP1) +
                 pin_value_get_ana(FCTEMP2))/2))
-    
+
 def get_FCPRES():
 	return (pin_value_get_ana(FCPRES) * FCPRESCoefficient - FCPRESConst)
- 
+
 def get_CAPCURR():
 	return (pin_value_get_ana(CAPCURR) * CAPCURRCoefficient)
 
