@@ -342,20 +342,19 @@ class TestbenchFCC_GUI(Frame):
 
         Label(self.parent, text="FC State: ").grid(row=debug_row_1, column=0)
         self.fcstate_entry = \
-            Entry(self.parent,justify='center', width=self.entry_width)
+            Entry(self.parent,justify='center', width=3*self.entry_width)
         self.fcstate_entry.grid(row=debug_row_1, column=1)
 
         Label(self.parent, text="Error Msg: ").grid(row=debug_row_2, column=0)
         self.errormsg_entry = \
             Entry(self.parent, justify='center', width=self.entry_width)
         self.errormsg_entry.grid(row=debug_row_2, column=1)
-        # self.errormsg_text = Text(self.parent, width=25, height=25)
+        # self.errormsg_text = Text(self.parent, width=25, height=10)
         # self.errormsg_text.grid(row=debug_row_2, column=1)
 
     def update_debug(self):
         self.fcstate_entry.delete(0, END)
         self.fcstate_entry.insert(0, self.FC_state)
-
 
     def cvm(self):
         cvm_title_row = 0
@@ -386,7 +385,6 @@ class TestbenchFCC_GUI(Frame):
         self.purge_disconnect_entry = \
             Entry(self.parent, justify='center', width=self.entry_width)
         self.purge_disconnect_entry.grid(row=cvm_start_row, column=11)
-
 
         cell_num = 0
         for y in range(self.FCCellVoltRows):
