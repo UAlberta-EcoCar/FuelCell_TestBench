@@ -6,13 +6,13 @@ import numpy
 
 def analog_configure():
     global analog_input_object
-      
+
 def pin_value_get_ana(pin_name):
     analog_input_object = MultiChannelAnalogInput([DAQ_dev_name + "/ai" + pin_name])
     analog_input_object.configure()
     analog_value = analog_input_object.read()
     return analog_value[0]
-    
+
 #def analog_configure2():
 #    if type(physicalChannel) == type(""):
 #            self.physicalChannel = [physicalChannel]
@@ -24,7 +24,7 @@ def pin_value_get_ana(pin_name):
 #        elif type(limit) == tuple:
 #            self.limit = dict([(name, limit) for name in self.physicalChannel])
 #        else:
-#            self.limit = dict([(name, limit[i]) for  i,name in enumerate(self.physicalChannel)])           
+#            self.limit = dict([(name, limit[i]) for  i,name in enumerate(self.physicalChannel)])
 #        if reset:
 #            DAQmxResetDevice(physicalChannel[0].split('/')[0] )
 #
@@ -38,7 +38,7 @@ def pin_value_get_ana(pin_name):
 #        self.taskHandles = taskHandles
 
 
-      
+
 def pin_value_get_ana2(pin_name):
     analog_input_object = MultiChannelAnalogInput([DAQ_dev_name + "/ai" + pin_name])
     analog_input_object.configure()
@@ -104,7 +104,7 @@ def digital_configure():
     digital_port_line[2][1].CreateDOChan(DAQ_dev_name + "/port2/line1", "", DAQmx_Val_ChanForAllLines)
     digital_port_line[2][2].CreateDOChan(DAQ_dev_name + "/port2/line2", "", DAQmx_Val_ChanForAllLines)
 
-    global read 
+    global read
     read = int32()
 
 def pin_value_get_dig(pin_name):
@@ -139,7 +139,9 @@ def FANStart():
 def FANUpdate(duty_cycle):
     global fanTaskHandle
     global prev_duty_cycle
+    global g_duty_cycle
     if (prev_duty_cycle != duty_cycle):
+        g_duty_cycle = duty_cycle
         prev_duty_cycle = duty_cycle
         DAQmxStopTask(fanTaskHandle)
         DAQmxClearTask(fanTaskHandle)

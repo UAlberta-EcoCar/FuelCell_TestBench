@@ -15,6 +15,7 @@ def convert_temp(temp_reading_raw):
         (TEMPCoefficient_x * temp_reading_raw) +
         TEMPConst)
     return temp_reading
+    # return temp_reading_raw
 
 def get_FCTEMP1():
     return convert_temp(pin_value_get_ana(FCTEMP1))
@@ -48,3 +49,9 @@ def get_FCVOLT():
 	return(pin_value_get_ana(FCVOLT) * FCVOLTCoefficient)
 	#10k and 1k voltage divider
 	#FCVolt = DAQReading * (10k + 1k) / 1k
+
+def get_MASSFLOW():
+    return pin_value_get_ana(MFLOW)
+
+def get_CAPCURR():
+    return pin_value_get_ana(CAPCURR)

@@ -15,6 +15,7 @@ global uJ_since_last_purge
 global estimated_total_E
 global mAms_since_last_purge
 global fan_update_timer
+global g_duty_cycle
 
 FANUPDATE_INTERVAL = 0.1
 PURGE_INTEGRATION_INTERVAL = 5
@@ -42,3 +43,4 @@ purge_integration_timer = 0
 delta_purge_time = 0
 
 prev_duty_cycle = 0.001
+g_duty_cycle = 0.001

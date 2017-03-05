@@ -13,15 +13,18 @@ from TestBench_Constants import *
 from TestBench_Functions import *
 from TestBench_ADC import *
 import DAQmxFunctions
+import argparse
 
 class TestbenchFCC_GUI(Frame):
     def __init__(self,parent):
         self.parent = parent
+        self.args = self.get_args()
 
         # DAQ Config
-        digital_configure()
-        analog_configure()
-        FANStart()
+        if self.args.DAQ_connected:
+            digital_configure()
+            analog_configure()
+            FANStart()
 
         # initialize Analog Inputs
         self.FCTemp1 = DoubleVar()
@@ -32,14 +35,17 @@ class TestbenchFCC_GUI(Frame):
         self.MassFlow = DoubleVar()
         self.CapVolt = DoubleVar()
         self.FCChargeSLP = DoubleVar()
-        self.FCTemp1.set(get_FCTEMP1())
-        self.FCTemp2.set(get_FCTEMP2())
-        self.FCCurr.set(get_FCCURR())
-        self.FCVolt.set(get_FCVOLT())
-        self.FCPres.set(get_FCPRES())
-        self.MassFlow.set(0)
-        self.CapVolt.set(get_CAPVOLT())
-        self.FCChargeSLP.set(0)
+        self.CapCurr = DoubleVar()
+        if self.args.DAQ_connected:
+            self.FCTemp1.set(get_FCTEMP1())
+            self.FCTemp2.set(get_FCTEMP2())
+            self.FCCurr.set(get_FCCURR())
+            self.FCVolt.set(get_FCVOLT())
+            self.FCPres.set(get_FCPRES())
+            self.MassFlow.set(get_MASSFLOW())
+            self.CapVolt.set(get_CAPVOLT())
+            # self.FCChargeSLP.set(0)
+            self.CapCurr.set(get_CAPCURR())
 
         # Colours for digital signals
         self.on_colour = "green"
@@ -48,8 +54,9 @@ class TestbenchFCC_GUI(Frame):
         # Initialize Digital Inputs
         self.H2OK = IntVar()
         self.FCStart = IntVar()
-        self.H2OK.set(pin_value_get_dig_output(H20K))
-        self.FCStart.set(pin_value_get_dig_output(START))
+        if self.args.DAQ_connected:
+            self.H2OK.set(pin_value_get_dig(H20K))
+            self.FCStart.set(pin_value_get_dig(START))
 
         # Initialize Digital Outputs
         self.FCSupply = IntVar()
@@ -58,13 +65,15 @@ class TestbenchFCC_GUI(Frame):
         self.MotorRelay = IntVar()
         self.CapRelay = IntVar()
         self.ResistorRelay = IntVar()
-        self.FCFan1 = IntVar()
-        self.FCSupply.set(pin_value_get_dig_output(H2_VALVE))
-        self.FCPurge.set(pin_value_get_dig_output(PURGE_VALVE))
-        self.StartupRelay.set(pin_value_get_dig_output(STARTUP_RELAY))
-        self.MotorRelay.set(pin_value_get_dig_output(MOTOR_RELAY))
-        self.CapRelay.set(pin_value_get_dig_output(CAP_RELAY))
-        self.ResistorRelay.set(pin_value_get_dig_output(RESISTOR_RELAY))
+        self.FCFanDutyCycle = DoubleVar()
+        if self.args.DAQ_connected:
+            self.FCSupply.set(pin_value_get_dig_output(H2_VALVE))
+            self.FCPurge.set(pin_value_get_dig_output(PURGE_VALVE))
+            self.StartupRelay.set(pin_value_get_dig_output(STARTUP_RELAY))
+            self.MotorRelay.set(pin_value_get_dig_output(MOTOR_RELAY))
+            self.CapRelay.set(pin_value_get_dig_output(CAP_RELAY))
+            self.ResistorRelay.set(pin_value_get_dig_output(RESISTOR_RELAY))
+            self.FCFanDutyCycle.set(get_duty_cycle())
 
         # Initialize CVM Section
         self.PurgeNow = IntVar()
@@ -102,12 +111,34 @@ class TestbenchFCC_GUI(Frame):
 
         # print "init done"
 
-    def update_digital_entries(self,digital_signals):
+    def get_args(self):
+        parser = argparse.ArgumentParser(
+            description='GUI for FCC Testbench',
+            formatter_class=argparse.RawTextHelpFormatter,
+            )
+
+        parser.add_argument("--nodaq",
+            help="Daq is not connected, allows for independent testing of GUI",
+            action="store_false",
+            dest="DAQ_connected")
+
+        parser.set_defaults(DAQ_connected=True)
+
+        args = parser.parse_args()
+
+        return args
+
+    def update_digital_entries(self, digital_signals,
+                                off_colour=None, on_colour=None):
+        if off_colour is None:
+            off_colour = self.off_colour
+        if on_colour is None:
+            on_colour = self.on_colour
         for (value, entry) in digital_signals.values():
             if value == 0:
-                colour = self.off_colour
+                colour = off_colour
             else:
-                colour = self.on_colour
+                colour = on_colour
             entry.configure(bg=colour)
 
     def update_analog_entries(self,analog_signals):
@@ -130,69 +161,78 @@ class TestbenchFCC_GUI(Frame):
         self.parent.grid_columnconfigure(2, pad=50)
         self.parent.grid_columnconfigure(4, pad=50)
 
-
-        Label(self.parent, text="Analog Inputs").grid(\
+        Label(self.parent, text="Analog Inputs", font=('bold')).grid(\
             row=analog_title_row, column=0, columnspan=8)
 
-        Label(self.parent, text="FC Temp 1: ").grid(\
+        Label(self.parent, text="FC Temp 1 (*C): ").grid(\
             row=analog_in_row1, column=0)
         self.fctemp1_entry = \
             Entry(self.parent, justify='center', width=self.entry_width)
         self.fctemp1_entry.grid(row=analog_in_row1, column=1)
 
-        Label(self.parent, text="FC Temp 2: ").grid(\
+        Label(self.parent, text="FC Temp 2 (*C): ").grid(\
             row=analog_in_row1, column=2)
         self.fctemp2_entry = \
             Entry(self.parent, justify='center', width=self.entry_width)
         self.fctemp2_entry.grid(row=analog_in_row1, column=3)
 
-        Label(self.parent, text="FC Voltage: ").grid(\
+        Label(self.parent, text="FC Pressure (PSI): ").grid(\
+            row=analog_in_row1, column = 4)
+        self.fcpres_entry = \
+            Entry(self.parent, justify='center', width=self.entry_width)
+        self.fcpres_entry.grid(row=analog_in_row1, column=5)
+
+        Label(self.parent, text="FC Voltage (V): ").grid(\
             row=analog_in_row2, column=0)
         self.fcvolt_entry = \
             Entry(self.parent, justify='center', width=self.entry_width)
         self.fcvolt_entry.grid(row=analog_in_row2, column=1)
 
-        Label(self.parent, text="FC Current: ").grid(\
+        Label(self.parent, text="FC Current (A): ").grid(\
             row=analog_in_row2, column=2)
         self.fccurr_entry = \
             Entry(self.parent, justify='center', width=self.entry_width)
         self.fccurr_entry.grid(row=analog_in_row2, column=3)
 
-        Label(self.parent, text="FC Pressure: ").grid(\
-            row=analog_in_row2, column = 4)
-        self.fcpres_entry = \
+        Label(self.parent, text="FC Charge since last purge (C): ").grid(\
+            row=analog_in_row2, column=4)
+        self.fcchargeslp_entry = \
             Entry(self.parent, justify='center', width=self.entry_width)
-        self.fcpres_entry.grid(row=analog_in_row2, column=5)
+        self.fcchargeslp_entry.grid(row=analog_in_row2, column=5)
 
-        Label(self.parent, text="Cap Voltage: ").grid(\
+        Label(self.parent, text="Cap Voltage (V): ").grid(\
             row=analog_in_row3, column=0)
         self.capvolt_entry = \
             Entry(self.parent, justify='center', width=self.entry_width)
         self.capvolt_entry.grid(row=analog_in_row3, column=1)
 
-        Label(self.parent, text="Mass Flow: ").grid(\
+        Label(self.parent, text="Cap Current (A): ").grid(\
             row=analog_in_row3, column=2)
+        self.capcurr_entry = \
+            Entry(self.parent, justify='center', width=self.entry_width)
+        self.capcurr_entry.grid(row=analog_in_row3, column=3)
+
+        Label(self.parent, text="Mass Flow (L/min): ").grid(\
+            row=analog_in_row3, column=4)
         self.massflow_entry = \
             Entry(self.parent, justify='center', width=self.entry_width)
-        self.massflow_entry.grid(row=analog_in_row3, column=3)
+        self.massflow_entry.grid(row=analog_in_row3, column=5)
 
-        Label(self.parent, text="FC Charge since last purge: ").grid(\
-            row=analog_in_row3, column=4)
-        self.fcchargeslp_entry = \
-            Entry(self.parent, justify='center', width=self.entry_width)
-        self.fcchargeslp_entry.grid(row=analog_in_row3, column=5)
 
         # print "analog input vals done"
 
     def update_analog_inputs(self):
-        self.FCTemp1.set(get_FCTEMP1())
-        self.FCTemp2.set(get_FCTEMP2())
-        self.FCCurr.set(get_FCCURR())
-        self.FCVolt.set(get_FCVOLT())
-        self.FCPres.set(get_FCPRES())
-        # self.MassFlow.set(0)
-        self.CapVolt.set(get_CAPVOLT())
-        # self.FCChargeSLP.set(0)
+        if self.args.DAQ_connected:
+            self.FCTemp1.set(get_FCTEMP1())
+            self.FCTemp2.set(get_FCTEMP2())
+            self.FCCurr.set(get_FCCURR())
+            self.FCVolt.set(get_FCVOLT())
+            self.FCPres.set(get_FCPRES())
+            self.MassFlow.set(get_MASSFLOW())
+            self.CapVolt.set(get_CAPVOLT())
+            self.CapCurr.set(get_CAPCURR())
+            # self.FCChargeSLP.set(0)
+            self.FCChargeSLP.set(get_CAPCURR())
         analog_in = {
             'fctemp1': (self.FCTemp1.get(), self.fctemp1_entry),
             'fctemp2': (self.FCTemp2.get(), self.fctemp2_entry),
@@ -200,6 +240,7 @@ class TestbenchFCC_GUI(Frame):
             'fccurr': (self.FCCurr.get(), self.fccurr_entry),
             'fcpres': (self.FCPres.get(), self.fcpres_entry),
             'capvolt': (self.CapVolt.get(), self.capvolt_entry),
+            'capcurr': (self.CapCurr.get(), self.capcurr_entry),
             'massflow': (self.MassFlow.get(), self.massflow_entry),
             'fcchargeslp': (self.FCChargeSLP.get(), self.fcchargeslp_entry)}
 
@@ -217,7 +258,7 @@ class TestbenchFCC_GUI(Frame):
         self.parent.grid_columnconfigure(0, pad=50)
         self.parent.grid_columnconfigure(2, pad=50)
 
-        Label(self.parent, text="Digital Inputs").grid(\
+        Label(self.parent, text="Digital Inputs", font=('bold')).grid(\
             row=dig_title_row, column=0, columnspan=8)
 
         Label(self.parent, text="H20K: ").grid(row=dig_in_row1, column=0)
@@ -233,14 +274,18 @@ class TestbenchFCC_GUI(Frame):
         # print "digital input vals done"
 
     def update_digital_inputs(self):
-        self.H2OK.set(pin_value_get_dig(H20K))
-        self.FCStart.set(pin_value_get_dig_output(START))
+        if self.args.DAQ_connected:
+            self.H2OK.set(pin_value_get_dig(H20K))
+            self.FCStart.set(pin_value_get_dig(START))
 
         dig_in = {
-            'h20k': (self.H2OK.get(), self.h2ok_entry),
             'fcstart': (self.FCStart.get(), self.fcstart_entry)}
 
+        dig_in_2 = {
+            'h20k': (self.H2OK.get(), self.h2ok_entry)}
+
         self.update_digital_entries(dig_in)
+        self.update_digital_entries(dig_in_2, off_colour='red')
 
         # print "updated digital input vals"
 
@@ -258,7 +303,7 @@ class TestbenchFCC_GUI(Frame):
         self.parent.grid_columnconfigure(2, pad=50)
         self.parent.grid_columnconfigure(4, pad=50)
 
-        Label(self.parent, text="Digital Outputs").grid(\
+        Label(self.parent, text="Digital Outputs", font=('bold')).grid(\
             row=dig_out_title_row, column=0, columnspan=8)
 
         Label(self.parent, text="FC Supply: ").grid(row=dig_out_row1, column=0)
@@ -271,7 +316,8 @@ class TestbenchFCC_GUI(Frame):
             Entry(self.parent, justify='center', width=self.entry_width)
         self.fcpurge_entry.grid(row=dig_out_row1, column=3)
 
-        Label(self.parent, text="FC Fan: ").grid(row=dig_out_row1, column=4)
+        Label(self.parent, text="FC Fan Duty Cycle: ").grid(\
+            row=dig_out_row1, column=4)
         self.fcfan_entry = \
             Entry(self.parent, justify='center', width=self.entry_width)
         self.fcfan_entry.grid(row=dig_out_row1, column=5)
@@ -302,59 +348,33 @@ class TestbenchFCC_GUI(Frame):
         # print "digital output values done"
 
     def update_digital_outputs(self):
-        self.FCSupply.set(pin_value_get_dig_output(H2_VALVE))
-        self.FCPurge.set(pin_value_get_dig_output(PURGE_VALVE))
-        self.StartupRelay.set(pin_value_get_dig_output(STARTUP_RELAY))
-        self.MotorRelay.set(pin_value_get_dig_output(MOTOR_RELAY))
-        self.CapRelay.set(pin_value_get_dig_output(CAP_RELAY))
-        self.ResistorRelay.set(pin_value_get_dig_output(RESISTOR_RELAY))
+        if self.args.DAQ_connected:
+            self.FCSupply.set(pin_value_get_dig_output(H2_VALVE))
+            self.FCPurge.set(pin_value_get_dig_output(PURGE_VALVE))
+            self.StartupRelay.set(pin_value_get_dig_output(STARTUP_RELAY))
+            self.MotorRelay.set(pin_value_get_dig_output(MOTOR_RELAY))
+            self.CapRelay.set(pin_value_get_dig_output(CAP_RELAY))
+            self.ResistorRelay.set(pin_value_get_dig_output(RESISTOR_RELAY))
 
         dig_out= {
             'fcsupply': (self.FCSupply.get(), self.fcsupply_entry),
             'fcpurge': (self.FCPurge.get(), self.fcpurge_entry),
-            'fcfan': (self.FCFan1.get(), self.fcfan_entry),
             'startup_relay': (self.StartupRelay.get(), \
                 self.startup_relay_entry),
             'motor_relay': (self.MotorRelay.get(), self.motor_relay_entry),
             'cap_relay': (self.CapRelay.get(), self.cap_relay_entry),
             'resistor_relay': (self.ResistorRelay.get(), \
-                self.resistor_relay_entry)}
+                self.resistor_relay_entry)
+            }
+
+        pwm = {
+            'fcfan duty_cycle': (self.FCFanDutyCycle.get(), self.fcfan_entry)
+            }
 
         self.update_digital_entries(dig_out)
+        self.update_analog_entries(pwm)
 
         # print "updated digital output values"
-
-    def debug(self):
-        debug_title_row = 10
-        debug_row_1 = 11
-        debug_row_2 = 12
-
-        self.parent.grid_rowconfigure(debug_title_row, pad=50)
-        self.parent.grid_rowconfigure(debug_row_1, pad=25)
-        self.parent.grid_rowconfigure(debug_row_2, pad=25)
-
-        self.parent.grid_columnconfigure(0, pad=50)
-        self.parent.grid_columnconfigure(2, pad=50)
-        self.parent.grid_columnconfigure(4, pad=50)
-
-        Label(self.parent, text="Debug").grid(\
-            row=debug_title_row, column=0, columnspan=8)
-
-        Label(self.parent, text="FC State: ").grid(row=debug_row_1, column=0)
-        self.fcstate_entry = \
-            Entry(self.parent,justify='center', width=3*self.entry_width)
-        self.fcstate_entry.grid(row=debug_row_1, column=1)
-
-        Label(self.parent, text="Error Msg: ").grid(row=debug_row_2, column=0)
-        self.errormsg_entry = \
-            Entry(self.parent, justify='center', width=self.entry_width)
-        self.errormsg_entry.grid(row=debug_row_2, column=1)
-        # self.errormsg_text = Text(self.parent, width=25, height=10)
-        # self.errormsg_text.grid(row=debug_row_2, column=1)
-
-    def update_debug(self):
-        self.fcstate_entry.delete(0, END)
-        self.fcstate_entry.insert(0, self.FC_state)
 
     def cvm(self):
         cvm_title_row = 0
@@ -371,7 +391,7 @@ class TestbenchFCC_GUI(Frame):
         self.parent.grid_columnconfigure(11, pad=50)
         self.parent.grid_columnconfigure(12, pad=50)
 
-        Label(self.parent, text="CVM").grid(\
+        Label(self.parent, text="CVM", font=('bold')).grid(\
             row=cvm_title_row, column=8, columnspan=8)
 
         Label(self.parent, text="Purge Now").grid(\
@@ -425,25 +445,58 @@ class TestbenchFCC_GUI(Frame):
         for i in range(self.FCCellCount):
             self.CellVoltages_display[i].set(str(self.CellVoltages[i].get()))
 
+    def debug(self):
+        debug_title_row = 10
+        debug_row_1 = 11
+        debug_row_2 = 12
+
+        self.parent.grid_rowconfigure(debug_title_row, pad=50)
+        self.parent.grid_rowconfigure(debug_row_1, pad=25)
+        self.parent.grid_rowconfigure(debug_row_2, pad=25)
+
+        self.parent.grid_columnconfigure(0, pad=50)
+        self.parent.grid_columnconfigure(2, pad=50)
+        self.parent.grid_columnconfigure(4, pad=50)
+
+        Label(self.parent, text="Debug", font=('bold')).grid(\
+            row=debug_title_row, column=0, columnspan=8)
+
+        Label(self.parent, text="FC State: ").grid(row=debug_row_1, column=0)
+        self.fcstate_entry = \
+            Entry(self.parent,justify='center', width=3*self.entry_width)
+        self.fcstate_entry.grid(row=debug_row_1, column=1)
+
+        Label(self.parent, text="Error Msg: ").grid(row=debug_row_2, column=0)
+        self.errormsg_entry = \
+            Entry(self.parent, justify='center', width=self.entry_width)
+        self.errormsg_entry.grid(row=debug_row_2, column=1)
+        # self.errormsg_text = Text(self.parent, width=25, height=10)
+        # self.errormsg_text.grid(row=debug_row_2, column=1)
+
+    def update_debug(self):
+        self.fcstate_entry.delete(0, END)
+        self.fcstate_entry.insert(0, self.FC_state)
+
     def main_state_machine(self):
         while True:
-            if (self.FC_state == "FC_STATE_STANDBY"):
-                self.FC_state = FC_standby()
-            elif (self.FC_state == "FC_STATE_SHUTDOWN"):
-                self.FC_state = FC_shutdown()
-            # elif (self.FC_state == "FC_STATE_STARTUP_FANS"):
-            #     # Ignore implementation for now, since fan stuff not working atm
-            #     pass
-            elif (self.FC_state == "FC_STATE_STARTUP_H2"):
-                self.FC_state = FC_startup_h2()
-            elif (self.FC_state == "FC_STATE_STARTUP_PURGE"):
-                self.FC_state = FC_startup_purge()
-            elif (self.FC_state == "FC_STATE_STARTUP_CHARGE"):
-                self.FC_state = FC_startup_charge()
-            elif (self.FC_state == "FC_STATE_RUN"):
-                self.FC_state = FC_run()
-            elif (self.FC_state == "FC_STATE_REPRESSURIZE"):
-                self.FC_state = FC_repressurize()
+            if self.args.DAQ_connected:
+                if (self.FC_state == "FC_STATE_STANDBY"):
+                    self.FC_state = FC_standby()
+                elif (self.FC_state == "FC_STATE_SHUTDOWN"):
+                    self.FC_state = FC_shutdown()
+                    # elif (self.FC_state == "FC_STATE_STARTUP_FANS"):
+                    #     # Ignore implementation for now
+                    #     pass
+                elif (self.FC_state == "FC_STATE_STARTUP_H2"):
+                    self.FC_state = FC_startup_h2()
+                elif (self.FC_state == "FC_STATE_STARTUP_PURGE"):
+                    self.FC_state = FC_startup_purge()
+                elif (self.FC_state == "FC_STATE_STARTUP_CHARGE"):
+                    self.FC_state = FC_startup_charge()
+                elif (self.FC_state == "FC_STATE_RUN"):
+                    self.FC_state = FC_run()
+                elif (self.FC_state == "FC_STATE_REPRESSURIZE"):
+                    self.FC_state = FC_repressurize()
 
             self.update_analog_inputs()
             self.update_digital_inputs()
@@ -453,6 +506,7 @@ class TestbenchFCC_GUI(Frame):
             self.parent.update_idletasks()
             self.parent.update()
         # print "state machine"
+
 
 if __name__ == "__main__":
     window = Tk()

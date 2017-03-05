@@ -331,3 +331,7 @@ def FC_alarm():
     FANUpdate(0.999)
     FC_state = "FC_STATE_ALARM"
     return FC_state
+
+def get_duty_cycle():
+    global g_duty_cycle
+    return g_duty_cycle
