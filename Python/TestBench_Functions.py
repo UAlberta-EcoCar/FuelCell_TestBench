@@ -335,3 +335,8 @@ def FC_alarm():
 def get_duty_cycle():
     global g_duty_cycle
     return g_duty_cycle
+
+def get_charge_since_last_purge():
+    global mAms_since_last_purge
+    global time_since_last_purge
+    return mAms_since_last_purge * time_since_last_purge
