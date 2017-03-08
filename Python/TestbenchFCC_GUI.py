@@ -6,10 +6,6 @@ Created on Tue Dec 27 03:40:29 2016
 """
 from Tkinter import *
 from ttk import Button, Style
-import time
-from TestBench_GPIO_Constants import *
-from TestBench_GPIO_Functions import *
-from TestBench_Constants import *
 from TestBench_Functions import *
 from TestBench_ADC import *
 import DAQmxFunctions
@@ -412,10 +408,14 @@ class TestbenchFCC_GUI(object):
             row=debug_row_2, column=0)
         self.errormsg_text = Text(container, width=25, height=10)
         self.errormsg_text.grid(row=debug_row_2, column=1)
+        self.errormsg_text.insert(END, self.errormsg_text)
+
 
     def update_debug(self):
         self.fcstate_entry.delete(0, END)
         self.fcstate_entry.insert(0, self.FC_state)
+        self.errormsg_text.delete(1.0, END)
+        self.errormsg_text.insert(1.0, self.errormsg)
 
     def stack_select(self):
         container = self.leftcontainer_bottom_right
