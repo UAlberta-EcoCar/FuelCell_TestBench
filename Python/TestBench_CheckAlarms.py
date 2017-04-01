@@ -13,8 +13,7 @@ error_msg = "None"
 
 def FC_check_alarms(FC_state):
   global error_msg
-  
-  error_msg = "None"
+
   if(pin_value_get_dig_output(H20K) == 0.0):
 		error_msg = "FC_ERR_H2OK_LOW"
 	#check temp H L and pressure H always
@@ -56,7 +55,6 @@ def FC_check_alarms(FC_state):
   if FC_state == "FC_state_ALARM":
 		if(get_FCCURR() > OVER_CUR_THRES):
 			error_msg = "FC_ERR_OVER_CUR"
-  return(error_msg)
-  
+
 def get_error_msg():
-    return(error_msg)
+    return error_msg

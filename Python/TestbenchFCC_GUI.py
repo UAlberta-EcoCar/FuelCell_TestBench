@@ -5,15 +5,27 @@ Created on Tue Dec 27 03:40:29 2016
 @author: Adnan
 """
 from Tkinter import *
+import tkMessageBox
 from ttk import Button, Style
 from TestBench_Functions import *
 from TestBench_ADC import *
-import DAQmxFunctions
+from TestBench_CheckAlarms import *
+from TestBench_FileDatalogging import *
 import argparse
+import os
 
 class TestbenchFCC_GUI(object):
     def __init__(self,parent):
         self.args = self.get_args()
+
+        # Main State Machine
+        self.running = True
+        self.parent = parent
+        self.parent.protocol("WM_DELETE_WINDOW", self.on_gui_close)
+
+        # Datalogging
+        if self.args.DAQ_connected:
+            self.logfile = init_datalogging()
 
         # initialize Analog Inputs section
         self.FCTemp1 = DoubleVar()
@@ -410,7 +422,6 @@ class TestbenchFCC_GUI(object):
         self.errormsg_text.grid(row=debug_row_2, column=1)
         self.errormsg_text.insert(END, self.errormsg_text)
 
-
     def update_debug(self):
         self.fcstate_entry.delete(0, END)
         self.fcstate_entry.insert(0, self.FC_state)
@@ -530,7 +541,7 @@ class TestbenchFCC_GUI(object):
             FANStart()
 
         # Main State Machine
-        while True:
+        while self.running:
             if self.args.DAQ_connected:
                 if (self.FC_state == "FC_STATE_STANDBY"):
                     self.FC_state = FC_standby()
@@ -549,7 +560,10 @@ class TestbenchFCC_GUI(object):
                     self.FC_state = FC_run()
                 elif (self.FC_state == "FC_STATE_REPRESSURIZE"):
                     self.FC_state = FC_repressurize()
+                FC_check_alarms(self.FC_state)
+                datalogging(self.logfile, self.FC_state)
 
+            self.errormsg = get_error_msg()
             self.update_analog_inputs()
             self.update_digital_inputs()
             self.update_digital_outputs()
@@ -559,6 +573,15 @@ class TestbenchFCC_GUI(object):
             self.parent.update()
         # print "state machine"
 
+    def on_gui_close(self):
+        if tkMessageBox.askokcancel("Quit", "Do you want to quit?"):
+            if self.args.DAQ_connected:
+                end_datalogging(self.logfile)
+                print("File closed (hopefully)")
+
+            print("gui died!")
+            self.running = False
+            self.parent.destroy()
 
 if __name__ == "__main__":
     window = Tk()
